@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo ARC — Plantilla GEO/AEO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface2: #1e1e28;
+    --border: #2a2a38;
+    --accent: #f26522;
+    --accent-dim: rgba(242,101,34,0.12);
+    --accent2: #5b8fff;
+    --text: #e8e8f0;
+    --text-muted: #7a7a9a;
+    --text-dim: #4a4a6a;
+    --green: #2ecc71;
+    --green-dim: rgba(46,204,113,0.1);
+    --red: #e74c3c;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .sidebar-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { border-left-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .nav-item.done { color: var(--green); }
+  .nav-item.done .nav-num { background: var(--green); color: #000; }
+
+  .nav-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+
+  .nav-item.active .nav-num { background: var(--accent); color: #fff; }
+
+  .nav-label { font-size: 12px; font-weight: 500; line-height: 1.3; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; flex-direction: column;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex; justify-content: space-between;
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  .step-panel {
+    display: none;
+    padding: 48px 56px;
+    max-width: 900px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .step-panel.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .step-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 680px;
+  }
+
+  .step-desc strong { color: var(--text); font-weight: 500; }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--accent-dim);
+    border: 1px solid rgba(242,101,34,0.25);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+
+  .info-box-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .info-box p {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .info-box p + p { margin-top: 6px; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  /* FORM ELEMENTS */
+  .field-group { margin-bottom: 20px; }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .badge.blue { background: rgba(91,143,255,0.12); color: var(--accent2); }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+  }
+
+  textarea { min-height: 90px; }
+  textarea.tall { min-height: 140px; }
+  textarea.short { min-height: 60px; }
+
+  /* RADIO GROUP */
+  .radio-group {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+
+  .radio-opt {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .radio-opt:hover { border-color: var(--accent); }
+  .radio-opt input { accent-color: var(--accent); }
+  .radio-opt.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+
+  /* TABLE EDITOR */
+  .table-editor {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .table-editor table { width: 100%; border-collapse: collapse; }
+
+  .table-editor th {
+    background: var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .table-editor td {
+    border-top: 1px solid var(--border);
+    padding: 4px;
+    vertical-align: top;
+  }
+
+  .table-editor td input,
+  .table-editor td textarea {
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    resize: none;
+    font-size: 12px;
+    padding: 7px 8px;
+  }
+
+  .table-editor td input:focus,
+  .table-editor td textarea:focus {
+    background: rgba(242,101,34,0.07);
+    border-color: transparent;
+  }
+
+  .example-row td { background: rgba(242,101,34,0.06); }
+  .example-row td input, .example-row td textarea { color: var(--text-muted); }
+
+  .add-row-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: none; border: 1px dashed var(--border);
+    color: var(--text-muted); font-size: 12px;
+    padding: 8px 14px; border-radius: 8px;
+    cursor: pointer; width: 100%;
+    justify-content: center;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    margin-top: 8px;
+  }
+
+  .add-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* CHECKLIST */
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .checklist-item:hover { border-color: var(--accent); }
+  .checklist-item.checked { border-color: var(--green); background: var(--green-dim); }
+
+  .check-box {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    font-size: 12px;
+  }
+
+  .checklist-item.checked .check-box { background: var(--green); border-color: var(--green); }
+
+  .check-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .check-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* VARC */
+  .varc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .varc-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .varc-letter {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .varc-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .varc-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+
+  /* NAVIGATION BUTTONS */
+  .step-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    border: none;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #d9561e; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-ghost { background: none; color: var(--text-muted); border: 1px solid transparent; }
+  .btn-ghost:hover { color: var(--text); }
+
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* WORD COUNT */
+  .word-count {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .word-count.over { color: var(--red); }
+  .word-count.ok { color: var(--green); }
+
+  /* COMPARE TABLE (Step 2) */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    margin-bottom: 24px;
+  }
+  .compare-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 10px 14px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .compare-table td.good { color: var(--green); }
+  .compare-table td.bad { color: #e74c3c; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  /* SUMMARY */
+  .summary-panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .summary-step-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .summary-field { margin-bottom: 10px; }
+  .summary-field-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+  .summary-field-val { font-size: 13px; color: var(--text); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 900px) {
+    .sidebar { width: 220px; }
+    .main { margin-left: 220px; }
+    .step-panel { padding: 32px 28px; }
+    .varc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Protocolo ARC</div>
+    <div class="sidebar-title">Plantilla GEO / AEO</div>
+    <div class="sidebar-subtitle">8 pasos para visibilidad en LLMs</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" onclick="goToStep(1)">
+      <span class="nav-num">1</span>
+      <span class="nav-label">Entidad y diferencial</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(2)">
+      <span class="nav-num">2</span>
+      <span class="nav-label">Zona Cero</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(3)">
+      <span class="nav-num">3</span>
+      <span class="nav-label">Cuerpo causal</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(4)">
+      <span class="nav-num">4</span>
+      <span class="nav-label">Tablas de datos</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(5)">
+      <span class="nav-num">5</span>
+      <span class="nav-label">E-E-A-T</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(6)">
+      <span class="nav-num">6</span>
+      <span class="nav-label">Bloque QA / FAQs</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(7)">
+      <span class="nav-num">7</span>
+      <span class="nav-label">Checklist de validación</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(8)">
+      <span class="nav-num">8</span>
+      <span class="nav-label">Medición VARC Score</span>
+    </a>
+    <a class="nav-item" onclick="goToStep(9)">
+      <span class="nav-num" style="background:rgba(91,143,255,0.2);color:var(--accent2)">✦</span>
+      <span class="nav-label">Resumen del contenido</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="progress-label">
+      <span>Progreso</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- STEP 1 -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-eyebrow">Paso 1 de 8</div>
+    <h1 class="step-title">Define tu entidad y tu diferencial</h1>
+    <p class="step-desc">Los LLMs no indexan palabras clave: indexan <strong>entidades</strong> y relaciones semánticas. Sin entidad bien definida y sin <strong>Information Gain</strong>, tu contenido compite con miles de páginas genéricas y el modelo citará otra fuente.</p>
+
+    <div class="info-box">
+      <div class="info-box-label">Instrucción clave</div>
+      <p>Responde las cuatro preguntas antes de escribir una sola línea de contenido. Son los cimientos de todo lo que construirás después.</p>
+      <p>Si no tienes un dato diferencial propio hoy, anota la pregunta de investigación interna que lo generaría.</p>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Entidad principal <span class="badge">keyword central</span></div>
+      <input type="text" id="s1-entidad" placeholder="Ej: Plataforma de automatización de marketing para pymes B2B" oninput="updateProgress()">
+      <div class="field-hint">El concepto exacto que quieres que los LLMs asocien contigo.</div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Intención de búsqueda</div>
+      <div class="radio-group" id="s1-intencion">
+        <label class="radio-opt"><input type="radio" name="intencion" value="Informativa"> Informativa</label>
+        <label class="radio-opt"><input type="radio" name="intencion" value="Comercial"> Comercial</label>
+        <label class="radio-opt"><input type="radio" name="intencion" value="Transaccional"> Transaccional</label>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Entidades adyacentes <span class="badge">3–5 conceptos</span></div>
+      <input type="text" id="s1-adyacentes" placeholder="Ej: CRM, lead scoring, email marketing, nurturing, inbound" oninput="updateProgress()">
+      <div class="field-hint">Conceptos semánticamente relacionados que deben aparecer en el texto de forma natural.</div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Information Gain <span class="badge" style="background:rgba(46,204,113,0.1);color:#2ecc71">tu dato único</span></div>
+      <textarea id="s1-gain" placeholder="¿Qué dato, métrica o insight tienes que ninguna otra fuente publica? Ej: Las empresas que aplican X reducen Y un 34% en 90 días." oninput="updateProgress()"></textarea>
+      <div class="field-hint">Este dato es el motivo por el que un LLM te citará a ti y no a otra fuente genérica.</div>
+    </div>
+
+    <div class="step-nav">
+      <div></div>
+      <button class="btn btn-primary" onclick="goToStep(2)">Siguiente: Zona Cero →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-panel" id="step-2">
+    <div class="step-eyebrow">Paso 2 de 8</div>
+    <h1 class="step-title">Zona Cero — La respuesta directa</h1>
+    <p class="step-desc">El H1 más el resumen inicial son lo primero que los LLMs extraen. Si no es claro y directo, el modelo buscará otra fuente. <strong>Es tu primera línea de visibilidad generativa.</strong></p>
+
+    <div class="info-box">
+      <div class="info-box-label">Regla de la Zona Cero</div>
+      <p><strong>Máximo 50 palabras. Estructura: Sujeto + Verbo + Predicado.</strong></p>
+      <p>Sin frases de introducción. Sin relleno. La primera frase debe responder directamente la pregunta que el usuario haría a un LLM. Incluye siempre al menos un dato medible propio.</p>
+    </div>
+
+    <div class="section-label">Referencia — Correcto vs. Incorrecto</div>
+    <table class="compare-table">
+      <thead><tr><th>Elemento</th><th>✓ Correcto</th><th>✗ Incorrecto</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>H1</td>
+          <td class="good">Automatización de marketing para pymes B2B: qué es y cómo reduce el ciclo de venta un 34%</td>
+          <td class="bad">Todo lo que necesitas saber sobre automatización de marketing en 2025</td>
+        </tr>
+        <tr>
+          <td>Resumen</td>
+          <td class="good">S + V + P. Dato medible incluido. Sin introducción.</td>
+          <td class="bad">Introducción genérica, sin sujeto claro, sin dato diferencial.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="field-group">
+      <div class="field-label">H1 — Título principal <span class="badge">entidad + dato diferencial</span></div>
+      <input type="text" id="s2-h1" placeholder="Ej: [Tu entidad]: qué es y cómo [resultado medible] un X%" oninput="updateProgress()">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Resumen atómico <span class="badge">máx. 50 palabras</span></div>
+      <textarea id="s2-resumen" class="short" placeholder="Empieza con el sujeto. Sin 'descubre cómo...' ni introducciones. Estructura: S + V + P + dato medible propio." oninput="countWords(this, 'wc-resumen', 50)"></textarea>
+      <div class="word-count" id="wc-resumen">0 / 50 palabras</div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(1)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Siguiente: Cuerpo causal →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-panel" id="step-3">
+    <div class="step-eyebrow">Paso 3 de 8</div>
+    <h1 class="step-title">Cuerpo técnico causal</h1>
+    <p class="step-desc">Los LLMs buscan conexiones causales: "porque", "lo que permite", "el resultado es". El patrón <strong>Característica → Mecanismo → Resultado</strong> hace que el modelo te cite como referencia técnica, no solo como fuente de datos genéricos.</p>
+
+    <div class="info-box">
+      <div class="info-box-label">Patrón por cada bloque</div>
+      <p><strong>Característica:</strong> qué tiene o hace tu producto/servicio/metodología.</p>
+      <p><strong>Mecanismo:</strong> cómo lo hace — el proceso técnico o metodológico, paso a paso.</p>
+      <p><strong>Resultado:</strong> qué consigue el usuario como consecuencia directa y medible.</p>
+    </div>
+
+    <div class="section-label">Tu tabla de razonamiento causal — mínimo 3 tripletas</div>
+
+    <div class="table-editor">
+      <table id="causal-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Característica</th>
+            <th style="width:42%">Mecanismo (cómo funciona)</th>
+            <th style="width:30%">Resultado medible</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="example-row">
+            <td><input type="text" value="EJEMPLO: Seguimiento automático basado en comportamiento" readonly></td>
+            <td><textarea readonly style="min-height:60px">El sistema detecta cuándo un lead abre un email o visita la página de precios y activa automáticamente la secuencia comercial correspondiente, sin intervención manual.</textarea></td>
+            <td><input type="text" value="Conversión de MQL a SQL +28% en 60 días."></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Tu característica 1" oninput="updateProgress()"></td>
+            <td><textarea placeholder="¿Cómo funciona técnicamente? Describe el proceso paso a paso." oninput="updateProgress()"></textarea></td>
+            <td><input type="text" placeholder="Resultado concreto y medible" oninput="updateProgress()"></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Tu característica 2"></td>
+            <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
+            <td><input type="text" placeholder="Resultado medible"></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Tu característica 3"></td>
+            <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
+            <td><input type="text" placeholder="Resultado medible"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addCausalRow()">+ Añadir otra tripleta</button>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(2)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Siguiente: Tablas →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-panel" id="step-4">
+    <div class="step-eyebrow">Paso 4 de 8</div>
+    <h1 class="step-title">Tablas de datos comparativas</h1>
+    <p class="step-desc">Los agentes de IA priorizan la información tabular para preguntas de comparación y especificación técnica. Una tabla bien estructurada puede ser citada directamente sin que el usuario llegue a tu web.</p>
+
+    <div class="info-box">
+      <div class="info-box-label">Patrón recomendado</div>
+      <p>Cualquier comparativa, especificación técnica o proceso con más de 3 pasos debería presentarse en tabla.</p>
+      <p>Formato: <strong>Criterio | Descripción | Valor o Resultado</strong>. El texto narrativo complementa, no sustituye.</p>
+    </div>
+
+    <div class="section-label">¿Qué tipo de tabla necesitas?</div>
+    <div class="radio-group" style="margin-bottom:24px" id="s4-tipo">
+      <label class="radio-opt"><input type="radio" name="tipotabla" value="comparativa"> Comparativa (A vs B)</label>
+      <label class="radio-opt"><input type="radio" name="tipotabla" value="especificacion"> Especificación técnica</label>
+      <label class="radio-opt"><input type="radio" name="tipotabla" value="proceso"> Proceso paso a paso</label>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Cabeceras de columna</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1">
+        <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1">
+        <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1">
+      </div>
+    </div>
+
+    <div class="table-editor">
+      <table id="datos-table">
+        <thead>
+          <tr>
+            <th style="width:33%">Criterio / Item</th>
+            <th style="width:33%">Valor / Situación A</th>
+            <th style="width:33%">Valor / Situación B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="example-row">
+            <td><input type="text" value="EJEMPLO: Tiempo de respuesta al lead" readonly></td>
+            <td><input type="text" value="6-48 horas" readonly></td>
+            <td><input type="text" value="< 5 minutos" readonly></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Criterio 1" oninput="updateProgress()"></td>
+            <td><input type="text" placeholder="Valor A"></td>
+            <td><input type="text" placeholder="Valor B"></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Criterio 2"></td>
+            <td><input type="text" placeholder="Valor A"></td>
+            <td><input type="text" placeholder="Valor B"></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Criterio 3"></td>
+            <td><input type="text" placeholder="Valor A"></td>
+            <td><input type="text" placeholder="Valor B"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addDatosRow()">+ Añadir fila</button>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(3)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(5)">Siguiente: E-E-A-T →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-panel" id="step-5">
+    <div class="step-eyebrow">Paso 5 de 8</div>
+    <h1 class="step-title">Autoridad y confianza — E-E-A-T</h1>
+    <p class="step-desc">Google y los LLMs aplican E-E-A-T para decidir qué fuentes citar. Un contenido sin respaldo externo puede ser correcto, pero los modelos lo tratan como "opinión sin verificar". <strong>No basta con tenerlo: hay que hacerlo visible.</strong></p>
+
+    <div class="info-box">
+      <div class="info-box-label">Formato de cada afirmación</div>
+      <p>[Afirmación con el dato concreto] (Fuente: Nombre, Año — URL completa)</p>
+      <p>El modelo verifica entidad + año + URL antes de aceptar la fuente como fiable.</p>
+    </div>
+
+    <div class="section-label">Las 4 dimensiones E-E-A-T</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">EXPERIENCIA</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Casos reales con fechas, datos propios de clientes, resultados documentados.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">ESPECIALIZACIÓN</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Terminología precisa, cita de estudios, metodología propia, autoría firmada con credenciales.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">AUTORIDAD</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Menciones en prensa, certificaciones verificables, partnerships reconocidos, publicaciones del sector.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">CONFIANZA</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Fecha de actualización visible, autoría firmada, fuentes externas enlazadas.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Tus afirmaciones acreditadas — mínimo 3</div>
+
+    <div class="table-editor">
+      <table id="eeat-table">
+        <thead>
+          <tr>
+            <th style="width:45%">Afirmación + dato medible</th>
+            <th style="width:20%">Fuente</th>
+            <th style="width:10%">Año</th>
+            <th style="width:25%">URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="example-row">
+            <td><textarea style="min-height:48px" readonly>El tráfico referido desde interfaces de IA creció un 1.300% en 2024.</textarea></td>
+            <td><input type="text" value="Semrush" readonly></td>
+            <td><input type="text" value="2025" readonly style="width:60px"></td>
+            <td><input type="text" value="semrush.com/es/blog/informe-trafico-ia" readonly></td>
+          </tr>
+          <tr>
+            <td><textarea style="min-height:48px" placeholder="Escribe tu afirmación con dato concreto..." oninput="updateProgress()"></textarea></td>
+            <td><input type="text" placeholder="Fuente"></td>
+            <td><input type="text" placeholder="2024" style="width:60px"></td>
+            <td><input type="text" placeholder="URL o 'pendiente'"></td>
+          </tr>
+          <tr>
+            <td><textarea style="min-height:48px" placeholder="Afirmación 2..."></textarea></td>
+            <td><input type="text" placeholder="Fuente"></td>
+            <td><input type="text" placeholder="2024" style="width:60px"></td>
+            <td><input type="text" placeholder="URL"></td>
+          </tr>
+          <tr>
+            <td><textarea style="min-height:48px" placeholder="Afirmación 3..."></textarea></td>
+            <td><input type="text" placeholder="Fuente"></td>
+            <td><input type="text" placeholder="2024" style="width:60px"></td>
+            <td><input type="text" placeholder="URL"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addEeatRow()">+ Añadir afirmación</button>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(4)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(6)">Siguiente: FAQs →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-panel" id="step-6">
+    <div class="step-eyebrow">Paso 6 de 8</div>
+    <h1 class="step-title">Bloque QA para motores generativos</h1>
+    <p class="step-desc">Si no tienes un bloque QA en tu contenido, el modelo responderá usando fuentes de la competencia. <strong>Cada FAQ debe ser autocontenida:</strong> el LLM debe poder usarla directamente, sin necesitar el resto del texto.</p>
+
+    <div class="info-box">
+      <div class="info-box-label">Reglas del bloque QA</div>
+      <p>Mínimo 6 preguntas. Recomendado: 8. Cada respuesta: máximo 60 palabras. Empieza con la respuesta directa, no con contexto.</p>
+      <p>Cubre el ciclo completo: definición → comparación → coste → implementación → requisitos → beneficio → tiempo → diferencial.</p>
+    </div>
+
+    <div id="faq-container"></div>
+    <button class="add-row-btn" onclick="addFaq()">+ Añadir pregunta</button>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(5)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(7)">Siguiente: Checklist →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-panel" id="step-7">
+    <div class="step-eyebrow">Paso 7 de 8</div>
+    <h1 class="step-title">Checklist de validación GEO</h1>
+    <p class="step-desc">Antes de publicar, pasa este checklist. Un "No" o "Pendiente" en cualquier criterio reduce las probabilidades de que el contenido sea citado por un LLM. Haz clic en cada ítem para marcarlo.</p>
+
+    <div id="checklist-container"></div>
+
+    <div style="margin-top:24px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Criterios cumplidos</div>
+        <div style="font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)" id="check-score">0 / 9</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Estado</div>
+        <div style="font-size:13px;font-weight:600" id="check-status">Completa los criterios</div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(6)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(8)">Siguiente: VARC Score →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step-panel" id="step-8">
+    <div class="step-eyebrow">Paso 8 de 8</div>
+    <h1 class="step-title">Medición — VARC Score</h1>
+    <p class="step-desc">El Protocolo ARC no termina en la publicación. Sin medición no hay mejora. El VARC Score evalúa el rendimiento de tu contenido en los motores de IA generativa de forma sistemática y continua.</p>
+
+    <div class="varc-grid">
+      <div class="varc-card">
+        <div class="varc-letter">V</div>
+        <div class="varc-name">Visibilidad Generativa</div>
+        <div class="varc-desc">Cuántas veces aparece tu marca en respuestas de los LLMs monitorizados. KPI: AI Visibility Score (0-100). Frecuencia: semanal.</div>
+        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+        <input type="text" placeholder="Ej: Semrush AIO / revisión manual semanal" oninput="updateProgress()">
+      </div>
+      <div class="varc-card">
+        <div class="varc-letter" style="color:var(--accent2)">A</div>
+        <div class="varc-name">Autoridad de Fuente</div>
+        <div class="varc-desc">Con qué frecuencia te citan vs. competidores directos. KPI: Share of Voice generativo (%). Frecuencia: mensual.</div>
+        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+        <input type="text" placeholder="Ej: Prompts manuales en ChatGPT, Gemini, Perplexity">
+      </div>
+      <div class="varc-card">
+        <div class="varc-letter" style="color:var(--green)">R</div>
+        <div class="varc-name">Reputación en IA</div>
+        <div class="varc-desc">Precisión y tono de las menciones. ¿Qué dice la IA sobre tu marca y es correcto? KPI: % menciones sin errores. Mensual.</div>
+        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+        <input type="text" placeholder="Ej: Auditoría manual mensual de menciones">
+      </div>
+      <div class="varc-card">
+        <div class="varc-letter" style="color:#e67e22">C</div>
+        <div class="varc-name">Conversión desde IA</div>
+        <div class="varc-desc">Tráfico y leads que llegan desde interfaces generativas. KPI: sesiones con fuente "AI referral". Frecuencia: semanal.</div>
+        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+        <input type="text" placeholder="Ej: GA4 + UTMs etiquetados por canal IA">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">URL donde se publicará este contenido</div>
+      <input type="text" placeholder="https://tudominio.com/pagina-del-contenido" oninput="updateProgress()">
+      <div class="field-hint">Los LLMs necesitan indexar una URL pública. No guardes este trabajo en un PDF interno.</div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Fecha de publicación prevista</div>
+      <input type="text" placeholder="Ej: 25 junio 2026">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Notas de seguimiento</div>
+      <textarea placeholder="Próximos pasos, responsable, fecha de revisión VARC..."></textarea>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(7)">← Anterior</button>
+      <button class="btn btn-primary" onclick="goToStep(9)">Ver resumen completo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 9 — SUMMARY -->
+  <div class="step-panel" id="step-9">
+    <div class="step-eyebrow">Resumen</div>
+    <h1 class="step-title">Tu contenido GEO-optimizado</h1>
+    <p class="step-desc">Aquí tienes el resumen de todo lo que has completado. Puedes usarlo como brief final para redactar el contenido publicable.</p>
+
+    <div id="summary-output"></div>
+
+    <div style="margin-top:24px;display:flex;gap:12px">
+      <button class="btn btn-primary" onclick="generateSummary()">↺ Actualizar resumen</button>
+      <button class="btn btn-secondary" onclick="printSummary()">Imprimir / Exportar PDF</button>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-ghost" onclick="goToStep(8)">← Volver al paso 8</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 8;
+
+  // FAQ data
+  const faqTypes = [
+    { tipo: 'Definición', q: '¿Qué es [entidad]?' },
+    { tipo: 'Comparación', q: '¿En qué se diferencia [entidad] de [alternativa principal]?' },
+    { tipo: 'Coste', q: '¿Cuánto cuesta implementar [entidad]?' },
+    { tipo: 'Implementación', q: '¿Cómo se implementa [entidad] paso a paso?' },
+    { tipo: 'Requisitos', q: '¿Qué se necesita para empezar con [entidad]?' },
+    { tipo: 'Beneficio', q: '¿Qué resultados concretos ofrece [entidad]?' },
+    { tipo: 'Tiempo', q: '¿Cuánto tarda [entidad] en dar resultados?' },
+    { tipo: 'Diferencial', q: '¿Por qué elegir [entidad] frente a otras opciones?' }
+  ];
+
+  // Checklist data
+  const checklistItems = [
+    { title: 'Entidad definida', desc: 'La entidad principal está clara y las 3-5 entidades adyacentes aparecen de forma natural en el texto.' },
+    { title: 'Information Gain visible', desc: 'Hay al menos un dato, métrica o insight propio que no existe en otras fuentes.' },
+    { title: 'Definición atómica', desc: 'El H1 + resumen tienen menos de 50 palabras con estructura S+V+P y al menos un dato medible.' },
+    { title: 'Estructura causal visible', desc: 'El patrón Característica → Mecanismo → Resultado está aplicado en al menos una sección.' },
+    { title: 'Tabla de datos', desc: 'Hay al menos una tabla comparativa o de especificaciones en el cuerpo del contenido.' },
+    { title: 'Fuente externa acreditada', desc: 'Al menos 1 afirmación incluye el formato: Fuente: Entidad, Año — URL.' },
+    { title: 'E-E-A-T demostrado', desc: 'Al menos 2 de las 4 dimensiones E-E-A-T están evidenciadas explícitamente en el texto.' },
+    { title: 'FAQs autocontenidas', desc: 'Mínimo 6 preguntas frecuentes con respuesta directa de menos de 60 palabras cada una.' },
+    { title: 'Sin adjetivos genéricos', desc: 'Ninguna afirmación usa «innovador», «líder», «único», «mejor» sin dato que lo respalde.' }
+  ];
+
+  function init() {
+    // Build FAQ section
+    const faqContainer = document.getElementById('faq-container');
+    faqTypes.forEach((f, i) => {
+      faqContainer.appendChild(createFaqItem(f.tipo, f.q, i));
+    });
+
+    // Build checklist
+    const cl = document.getElementById('checklist-container');
+    checklistItems.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'checklist-item';
+      el.id = 'cl-' + i;
+      el.onclick = () => toggleCheck(i);
+      el.innerHTML = `<div class="check-box" id="cb-${i}"></div><div><div class="check-title">${item.title}</div><div class="check-desc">${item.desc}</div></div>`;
+      cl.appendChild(el);
+    });
+
+    // Radio labels
+    document.querySelectorAll('.radio-opt').forEach(opt => {
+      const input = opt.querySelector('input');
+      if (input) {
+        input.addEventListener('change', () => {
+          opt.closest('.radio-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          updateProgress();
+        });
+      }
+    });
+  }
+
+  function createFaqItem(tipo, pregunta, idx) {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);padding:3px 8px;border-radius:20px">${tipo}</span>
+      </div>
+      <div class="field-label" style="margin-bottom:6px">Pregunta</div>
+      <input type="text" value="${pregunta}" style="margin-bottom:10px" class="faq-q" oninput="updateProgress()">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+        <div class="field-label">Respuesta <span class="badge">máx. 60 palabras</span></div>
+        <div class="word-count" id="fwc-${idx}">0 / 60</div>
+      </div>
+      <textarea class="short faq-a" placeholder="Empieza con la respuesta directa. Sin contexto previo." oninput="countWords(this,'fwc-${idx}',60);updateProgress()"></textarea>
+    `;
+    return div;
+  }
+
+  function addFaq() {
+    const container = document.getElementById('faq-container');
+    const idx = container.children.length;
+    const div = createFaqItem('Personalizada', '¿...?', 'c' + idx);
+    container.appendChild(div);
+  }
+
+  function toggleCheck(i) {
+    const item = document.getElementById('cl-' + i);
+    const box = document.getElementById('cb-' + i);
+    item.classList.toggle('checked');
+    box.textContent = item.classList.contains('checked') ? '✓' : '';
+    updateCheckScore();
+    updateProgress();
+  }
+
+  function updateCheckScore() {
+    const checked = document.querySelectorAll('.checklist-item.checked').length;
+    const total = checklistItems.length;
+    document.getElementById('check-score').textContent = `${checked} / ${total}`;
+    const statusEl = document.getElementById('check-status');
+    if (checked === total) { statusEl.textContent = '✓ Listo para publicar'; statusEl.style.color = 'var(--green)'; }
+    else if (checked >= 6) { statusEl.textContent = 'Casi listo'; statusEl.style.color = '#f39c12'; }
+    else { statusEl.textContent = 'Completa los criterios'; statusEl.style.color = 'var(--text-muted)'; }
+  }
+
+  function addCausalRow() {
+    const tbody = document.querySelector('#causal-table tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" placeholder="Característica"></td>
+      <td><textarea placeholder="Mecanismo..."></textarea></td>
+      <td><input type="text" placeholder="Resultado medible"></td>`;
+    tbody.appendChild(tr);
+  }
+
+  function addDatosRow() {
+    const tbody = document.querySelector('#datos-table tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" placeholder="Criterio"></td>
+      <td><input type="text" placeholder="Valor A"></td>
+      <td><input type="text" placeholder="Valor B"></td>`;
+    tbody.appendChild(tr);
+  }
+
+  function addEeatRow() {
+    const tbody = document.querySelector('#eeat-table tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><textarea style="min-height:48px" placeholder="Afirmación + dato..."></textarea></td>
+      <td><input type="text" placeholder="Fuente"></td>
+      <td><input type="text" placeholder="Año" style="width:60px"></td>
+      <td><input type="text" placeholder="URL"></td>`;
+    tbody.appendChild(tr);
+  }
+
+  function countWords(el, counterId, max) {
+    const words = el.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const counter = document.getElementById(counterId);
+    if (!counter) return;
+    counter.textContent = `${words} / ${max} palabras`;
+    counter.className = 'word-count';
+    if (words > max) counter.classList.add('over');
+    else if (words > max * 0.7) counter.classList.add('ok');
+  }
+
+  function goToStep(n) {
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+    document.getElementById('step-' + n).classList.add('active');
+    document.querySelectorAll('.nav-item')[n - 1].classList.add('active');
+
+    currentStep = n;
+    if (n === 9) generateSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
+  }
+
+  function updateProgress() {
+    // Simple heuristic: check filled fields
+    let filled = 0;
+    const checks = [
+      document.getElementById('s1-entidad')?.value,
+      document.getElementById('s1-gain')?.value,
+      document.getElementById('s2-h1')?.value,
+      document.getElementById('s2-resumen')?.value,
+      document.querySelector('#causal-table tbody tr:nth-child(2) input')?.value,
+      document.querySelector('#datos-table tbody tr:nth-child(2) input')?.value,
+      document.querySelector('#eeat-table tbody tr:nth-child(2) textarea')?.value,
+      document.querySelector('.faq-a')?.value,
+    ];
+    checks.forEach(v => { if (v && v.trim().length > 0) filled++; });
+    const pct = Math.round((filled / checks.length) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  function generateSummary() {
+    const s1entidad = document.getElementById('s1-entidad')?.value || '—';
+    const s1gain = document.getElementById('s1-gain')?.value || '—';
+    const s1adj = document.getElementById('s1-adyacentes')?.value || '—';
+    const s2h1 = document.getElementById('s2-h1')?.value || '—';
+    const s2res = document.getElementById('s2-resumen')?.value || '—';
+    const checked = document.querySelectorAll('.checklist-item.checked').length;
+
+    // Causal rows
+    let causalRows = '';
+    const causalTrs = document.querySelectorAll('#causal-table tbody tr:not(.example-row)');
+    causalTrs.forEach(tr => {
+      const inputs = tr.querySelectorAll('input, textarea');
+      const c = inputs[0]?.value; const m = inputs[1]?.value; const r = inputs[2]?.value;
+      if (c || m || r) causalRows += `<tr><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${c||'—'}</td><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${m||'—'}</td><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${r||'—'}</td></tr>`;
+    });
+
+    // FAQs
+    let faqHtml = '';
+    document.querySelectorAll('.faq-q').forEach((q, i) => {
+      const a = document.querySelectorAll('.faq-a')[i]?.value;
+      if (q.value || a) faqHtml += `<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${q.value||'—'}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.6">${a||'—'}</div></div>`;
+    });
+
+    document.getElementById('summary-output').innerHTML = `
+      <div class="summary-panel">
+        <div class="summary-step-title">Paso 1 — Entidad y diferencial</div>
+        <div class="summary-field"><div class="summary-field-label">Entidad principal</div><div class="summary-field-val">${s1entidad}</div></div>
+        <div class="summary-field"><div class="summary-field-label">Entidades adyacentes</div><div class="summary-field-val">${s1adj}</div></div>
+        <div class="summary-field"><div class="summary-field-label">Information Gain</div><div class="summary-field-val">${s1gain}</div></div>
+      </div>
+      <div class="summary-panel">
+        <div class="summary-step-title">Paso 2 — Zona Cero</div>
+        <div class="summary-field"><div class="summary-field-label">H1</div><div class="summary-field-val" style="font-size:15px;font-weight:600">${s2h1}</div></div>
+        <div class="summary-field"><div class="summary-field-label">Resumen atómico</div><div class="summary-field-val">${s2res}</div></div>
+      </div>
+      ${causalRows ? `<div class="summary-panel"><div class="summary-step-title">Paso 3 — Cuerpo causal</div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Característica</th><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Mecanismo</th><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Resultado</th></tr></thead><tbody>${causalRows}</tbody></table></div>` : ''}
+      ${faqHtml ? `<div class="summary-panel"><div class="summary-step-title">Paso 6 — FAQs</div>${faqHtml}</div>` : ''}
+      <div class="summary-panel">
+        <div class="summary-step-title">Paso 7 — Checklist</div>
+        <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:${checked===9?'var(--green)':checked>=6?'#f39c12':'var(--accent)'}">${checked}/9 criterios cumplidos</div>
+      </div>
+    `;
+  }
+
+  function printSummary() {
+    window.print();
+  }
+
+  init();
+</script>
+</body>
+</html>
