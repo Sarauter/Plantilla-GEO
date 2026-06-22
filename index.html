@@ -791,7 +791,7 @@
     <div class="nav-section">Protocolo ARC</div>
     <button class="nav-item active" id="nav-1" onclick="goToStep(1)">
       <span class="nav-icon">1</span>
-      Entidad y diferencial
+      Empresa y diferencial
     </button>
     <button class="nav-item" id="nav-2" onclick="goToStep(2)">
       <span class="nav-icon">2</span>
@@ -846,8 +846,8 @@
     <div class="page active" id="step-1">
       <div class="page-header">
         <div class="page-eyebrow">Paso 1 de 8</div>
-        <h1 class="page-title">Define tu entidad y tu diferencial</h1>
-        <p class="page-desc">Los LLMs no indexan palabras clave: indexan <strong>entidades</strong> y relaciones semánticas. Sin entidad bien definida y sin <strong>Information Gain</strong>, tu contenido compite con miles de páginas genéricas y el modelo citará otra fuente.</p>
+        <h1 class="page-title">Define tu empresa y tu diferencial</h1>
+        <p class="page-desc">Los LLMs no indexan palabras clave: indexan <strong>empresaes</strong> y relaciones semánticas. Sin empresa bien definida y sin <strong>Information Gain</strong>, tu contenido compite con miles de páginas genéricas y el modelo citará otra fuente.</p>
       </div>
 
       <div class="info-card">
@@ -857,8 +857,8 @@
       </div>
 
       <div class="field-group">
-        <div class="field-label">Entidad principal <span class="badge">keyword central</span></div>
-        <input type="text" id="s1-entidad" placeholder="Ej: Plataforma de automatización de marketing para pymes B2B" oninput="updateProgress()">
+        <div class="field-label">Empresa o marca principal <span class="badge">keyword central</span></div>
+        <input type="text" id="s1-empresa" placeholder="Ej: Plataforma de automatización de marketing para pymes B2B" oninput="updateProgress()">
         <div class="field-hint">El concepto exacto que quieres que los LLMs asocien contigo.</div>
       </div>
 
@@ -872,7 +872,7 @@
       </div>
 
       <div class="field-group">
-        <div class="field-label">Entidades adyacentes <span class="badge">3–5 conceptos</span></div>
+        <div class="field-label">Empresas/temas adyacentes <span class="badge">3–5 conceptos</span></div>
         <input type="text" id="s1-adyacentes" placeholder="Ej: CRM, lead scoring, email marketing, nurturing, inbound" oninput="updateProgress()">
         <div class="field-hint">Conceptos semánticamente relacionados que deben aparecer en el texto de forma natural.</div>
       </div>
@@ -921,8 +921,8 @@
       </table>
 
       <div class="field-group">
-        <div class="field-label">H1 — Título principal <span class="badge">entidad + dato diferencial</span></div>
-        <input type="text" id="s2-h1" placeholder="Ej: [Tu entidad]: qué es y cómo [resultado medible] un X%" oninput="updateProgress()">
+        <div class="field-label">H1 — Título principal <span class="badge">empresa + dato diferencial</span></div>
+        <input type="text" id="s2-h1" placeholder="Ej: [Tu empresa]: qué es y cómo [resultado medible] un X%" oninput="updateProgress()">
       </div>
 
       <div class="field-group">
@@ -1020,8 +1020,8 @@
         <div class="field-label">Cabeceras de columna</div>
         <div style="display:flex;gap:8px;margin-bottom:8px">
           <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1">
-          <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1">
-          <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1">
+          <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [empresa]" style="flex:1">
+          <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [empresa]" style="flex:1">
         </div>
       </div>
 
@@ -1076,7 +1076,7 @@
       <div class="info-card">
         <div class="info-card-title">Formato de cada afirmación</div>
         <p>[Afirmación con el dato concreto] (Fuente: Nombre, Año — URL completa)</p>
-        <p>El modelo verifica entidad + año + URL antes de aceptar la fuente como fiable.</p>
+        <p>El modelo verifica empresa + año + URL antes de aceptar la fuente como fiable.</p>
       </div>
 
       <div class="section-label">Las 4 dimensiones E-E-A-T</div>
@@ -1298,23 +1298,23 @@
   const totalSteps = 8;
 
   const faqTypes = [
-    { tipo: 'Definición', q: '¿Qué es [entidad]?' },
-    { tipo: 'Comparación', q: '¿En qué se diferencia [entidad] de [alternativa principal]?' },
-    { tipo: 'Coste', q: '¿Cuánto cuesta implementar [entidad]?' },
-    { tipo: 'Implementación', q: '¿Cómo se implementa [entidad] paso a paso?' },
-    { tipo: 'Requisitos', q: '¿Qué se necesita para empezar con [entidad]?' },
-    { tipo: 'Beneficio', q: '¿Qué resultados concretos ofrece [entidad]?' },
-    { tipo: 'Tiempo', q: '¿Cuánto tarda [entidad] en dar resultados?' },
-    { tipo: 'Diferencial', q: '¿Por qué elegir [entidad] frente a otras opciones?' }
+    { tipo: 'Definición', q: '¿Qué es [empresa]?' },
+    { tipo: 'Comparación', q: '¿En qué se diferencia [empresa] de [alternativa principal]?' },
+    { tipo: 'Coste', q: '¿Cuánto cuesta implementar [empresa]?' },
+    { tipo: 'Implementación', q: '¿Cómo se implementa [empresa] paso a paso?' },
+    { tipo: 'Requisitos', q: '¿Qué se necesita para empezar con [empresa]?' },
+    { tipo: 'Beneficio', q: '¿Qué resultados concretos ofrece [empresa]?' },
+    { tipo: 'Tiempo', q: '¿Cuánto tarda [empresa] en dar resultados?' },
+    { tipo: 'Diferencial', q: '¿Por qué elegir [empresa] frente a otras opciones?' }
   ];
 
   const checklistItems = [
-    { title: 'Entidad definida', desc: 'La entidad principal está clara y las 3-5 entidades adyacentes aparecen de forma natural en el texto.' },
+    { title: 'Empresa definida', desc: 'La empresa o marca principal está clara y las 3-5 empresas/temas adyacentes aparecen de forma natural en el texto.' },
     { title: 'Information Gain visible', desc: 'Hay al menos un dato, métrica o insight propio que no existe en otras fuentes.' },
     { title: 'Definición atómica', desc: 'El H1 + resumen tienen menos de 50 palabras con estructura S+V+P y al menos un dato medible.' },
     { title: 'Estructura causal visible', desc: 'El patrón Característica → Mecanismo → Resultado está aplicado en al menos una sección.' },
     { title: 'Tabla de datos', desc: 'Hay al menos una tabla comparativa o de especificaciones en el cuerpo del contenido.' },
-    { title: 'Fuente externa acreditada', desc: 'Al menos 1 afirmación incluye el formato: Fuente: Entidad, Año — URL.' },
+    { title: 'Fuente externa acreditada', desc: 'Al menos 1 afirmación incluye el formato: Fuente: Empresa, Año — URL.' },
     { title: 'E-E-A-T demostrado', desc: 'Al menos 2 de las 4 dimensiones E-E-A-T están evidenciadas explícitamente en el texto.' },
     { title: 'FAQs autocontenidas', desc: 'Mínimo 6 preguntas frecuentes con respuesta directa de menos de 60 palabras cada una.' },
     { title: 'Sin adjetivos genéricos', desc: 'Ninguna afirmación usa «innovador», «líder», «único», «mejor» sin dato que lo respalde.' }
@@ -1655,7 +1655,7 @@
   function updateProgress() {
     let filled = 0;
     const checks = [
-      document.getElementById('s1-entidad')?.value,
+      document.getElementById('s1-empresa')?.value,
       document.getElementById('s1-gain')?.value,
       document.getElementById('s2-h1')?.value,
       document.getElementById('s2-resumen')?.value,
@@ -1671,7 +1671,7 @@
 
     // Mark nav items as "done" lightly based on filled key field per step
     const doneMap = {
-      1: document.getElementById('s1-entidad')?.value,
+      1: document.getElementById('s1-empresa')?.value,
       2: document.getElementById('s2-h1')?.value,
       3: document.querySelector('#causal-table tbody tr:nth-child(2) input')?.value,
       4: document.querySelector('#datos-table tbody tr:nth-child(2) input')?.value,
@@ -1689,7 +1689,7 @@
   }
 
   function generateSummary() {
-    const s1entidad = document.getElementById('s1-entidad')?.value || '—';
+    const s1empresa = document.getElementById('s1-empresa')?.value || '—';
     const s1gain = document.getElementById('s1-gain')?.value || '—';
     const s1adj = document.getElementById('s1-adyacentes')?.value || '—';
     const s2h1 = document.getElementById('s2-h1')?.value || '—';
@@ -1711,9 +1711,9 @@
 
     document.getElementById('summary-output').innerHTML = `
       <div class="summary-panel">
-        <div class="summary-step-title">Paso 1 — Entidad y diferencial</div>
-        <div class="summary-field"><div class="summary-field-label">Entidad principal</div><div class="summary-field-val">${s1entidad}</div></div>
-        <div class="summary-field"><div class="summary-field-label">Entidades adyacentes</div><div class="summary-field-val">${s1adj}</div></div>
+        <div class="summary-step-title">Paso 1 — Empresa y diferencial</div>
+        <div class="summary-field"><div class="summary-field-label">Empresa o marca principal</div><div class="summary-field-val">${s1empresa}</div></div>
+        <div class="summary-field"><div class="summary-field-label">Empresas/temas adyacentes</div><div class="summary-field-val">${s1adj}</div></div>
         <div class="summary-field"><div class="summary-field-label">Information Gain</div><div class="summary-field-val">${s1gain}</div></div>
       </div>
       <div class="summary-panel">
@@ -1738,7 +1738,7 @@
     generateSummary();
     const to = document.getElementById('email-to')?.value || '';
 
-    const s1entidad = document.getElementById('s1-entidad')?.value || '—';
+    const s1empresa = document.getElementById('s1-empresa')?.value || '—';
     const s1gain = document.getElementById('s1-gain')?.value || '—';
     const s1adj = document.getElementById('s1-adyacentes')?.value || '—';
     const s2h1 = document.getElementById('s2-h1')?.value || '—';
@@ -1748,8 +1748,8 @@
     let body = `PLANTILLA GEO/AEO — PROTOCOLO ARC\n`;
     body += `========================================\n\n`;
     body += `PASO 1 — ENTIDAD Y DIFERENCIAL\n`;
-    body += `Entidad principal: ${s1entidad}\n`;
-    body += `Entidades adyacentes: ${s1adj}\n`;
+    body += `Empresa o marca principal: ${s1empresa}\n`;
+    body += `Empresas/temas adyacentes: ${s1adj}\n`;
     body += `Information Gain: ${s1gain}\n\n`;
 
     body += `PASO 2 — ZONA CERO\n`;
@@ -1802,7 +1802,7 @@
     body += `Fecha prevista: ${document.getElementById('varc-fecha')?.value || '—'}\n`;
     body += `Notas: ${document.getElementById('varc-notas')?.value || '—'}\n`;
 
-    const subject = encodeURIComponent(`GEO/AEO — ${s1entidad !== '—' ? s1entidad : 'Plantilla Protocolo ARC'}`);
+    const subject = encodeURIComponent(`GEO/AEO — ${s1empresa !== '—' ? s1empresa : 'Plantilla Protocolo ARC'}`);
     const encodedBody = encodeURIComponent(body);
     const mailtoLink = `mailto:${to}?subject=${subject}&body=${encodedBody}`;
 
