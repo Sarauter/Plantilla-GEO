@@ -3,227 +3,348 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Protocolo ARC — Plantilla GEO/AEO</title>
+<title>SARAUTER · Protocolo ARC — GEO/AEO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0e0e12;
-    --surface: #16161d;
-    --surface2: #1e1e28;
-    --border: #2a2a38;
-    --accent: #f26522;
-    --accent-dim: rgba(242,101,34,0.12);
-    --accent2: #5b8fff;
-    --text: #e8e8f0;
-    --text-muted: #7a7a9a;
-    --text-dim: #4a4a6a;
-    --green: #2ecc71;
-    --green-dim: rgba(46,204,113,0.1);
-    --red: #e74c3c;
+    --purple-900: #1a1a2e;
+    --purple-800: #28283c;
+    --purple-700: #32324a;
+    --purple-600: #3c3c58;
+    --purple-500: #4a4a6e;
+    --purple-400: #5e5e8a;
+    --lilac-400: #9494b8;
+    --lilac-300: #ababc8;
+    --lilac-200: #c8c8dc;
+    --lilac-100: #eaeaf4;
+    --lilac-50:  #f5f5fa;
+    --white:     #ffffff;
+    --gray-50:   #f7f7fa;
+    --gray-100:  #ebebf2;
+    --gray-200:  #d6d6e4;
+    --gray-400:  #9898b0;
+    --gray-600:  #5a5a78;
+    --text:      #1a1a2e;
+    --text-soft: #5a5a78;
+    --text-hint: #9898b0;
+    --border:    rgba(40,40,60,0.1);
+    --border-md: rgba(40,40,60,0.2);
+    --shadow-sm: 0 1px 6px rgba(28,28,44,0.07);
+    --shadow-md: 0 4px 20px rgba(28,28,44,0.12);
+    --shadow-lg: 0 12px 48px rgba(28,28,44,0.16);
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --topbar-h:  60px;
+    --sidebar-w: 260px;
+    --green: #2e9e6b;
+    --green-bg: rgba(46,158,107,0.1);
+    --red: #d65151;
   }
 
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
+  html, body {
+    height: 100%;
+    background: var(--gray-50);
+    font-family: 'DM Sans', sans-serif;
     color: var(--text);
-    min-height: 100vh;
-    display: flex;
+    font-size: 14.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* SIDEBAR */
-  .sidebar {
-    width: 260px;
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: var(--topbar-h) 1fr;
     min-height: 100vh;
-    background: var(--surface);
+  }
+
+  /* ── TOPBAR ───────────────────────────────────────── */
+  .topbar {
+    grid-column: 1 / -1;
+    background: var(--purple-800);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .topbar-wordmark {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .topbar-divider {
+    width: 1px; height: 22px;
+    background: rgba(255,255,255,0.12);
+    margin: 0 2px;
+  }
+
+  .topbar-sub {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  .topbar-pill {
+    background: rgba(179,136,255,0.15);
+    color: var(--lilac-400);
+    border: 1px solid rgba(179,136,255,0.25);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .save-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--lilac-400);
+    flex-shrink: 0;
+  }
+
+  /* ── SIDEBAR ──────────────────────────────────────── */
+  .sidebar {
+    background: var(--white);
     border-right: 1px solid var(--border);
-    position: fixed;
-    top: 0; left: 0;
+    padding: 20px 12px;
+    overflow-y: auto;
+    position: sticky;
+    top: var(--topbar-h);
+    height: calc(100vh - var(--topbar-h));
     display: flex;
     flex-direction: column;
-    z-index: 100;
   }
 
-  .sidebar-header {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-  .sidebar-logo {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .sidebar-title {
-    font-size: 16px;
+  .nav-section {
+    font-family: 'Sora', sans-serif;
+    font-size: 9.5px;
     font-weight: 700;
-    color: var(--text);
-    line-height: 1.3;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lilac-400);
+    padding: 0 8px;
+    margin-bottom: 4px;
+    margin-top: 20px;
   }
 
-  .sidebar-subtitle {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  .sidebar-nav {
-    flex: 1;
-    padding: 16px 0;
-    overflow-y: auto;
-  }
+  .nav-section:first-child { margin-top: 0; }
 
   .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 20px;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
     cursor: pointer;
-    transition: all 0.15s;
-    border-left: 3px solid transparent;
-    text-decoration: none;
-    color: var(--text-muted);
+    transition: background 0.1s, color 0.1s;
+    color: var(--text-soft);
+    font-size: 13.5px;
+    font-weight: 400;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
   }
 
-  .nav-item:hover { background: var(--surface2); color: var(--text); }
-  .nav-item.active { border-left-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .nav-item:hover { background: var(--lilac-100); color: var(--purple-600); }
+
+  .nav-item.active {
+    background: linear-gradient(90deg, var(--lilac-100), rgba(179,136,255,0.06));
+    color: var(--purple-600);
+    font-weight: 600;
+    border-left: 3px solid var(--purple-400);
+    padding-left: 7px;
+  }
+
   .nav-item.done { color: var(--green); }
-  .nav-item.done .nav-num { background: var(--green); color: #000; }
 
-  .nav-num {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: var(--border);
+  .nav-icon {
+    width: 26px; height: 26px;
+    border-radius: 7px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700;
+    font-size: 12px;
+    font-weight: 700;
     flex-shrink: 0;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s;
+    background: var(--gray-100);
+    font-family: 'Sora', sans-serif;
+    color: var(--text-soft);
   }
 
-  .nav-item.active .nav-num { background: var(--accent); color: #fff; }
+  .nav-item.active .nav-icon { background: rgba(124,63,204,0.1); color: var(--purple-600); }
+  .nav-item.done .nav-icon { background: var(--green-bg); color: var(--green); }
 
-  .nav-label { font-size: 12px; font-weight: 500; line-height: 1.3; }
+  .nav-count {
+    margin-left: auto;
+    font-size: 10.5px;
+    color: var(--text-hint);
+    background: var(--gray-100);
+    padding: 1px 6px;
+    border-radius: 20px;
+  }
 
-  .sidebar-footer {
-    padding: 16px 20px;
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 14px 10px 4px;
     border-top: 1px solid var(--border);
-    display: flex; gap: 8px; flex-direction: column;
   }
 
-  .progress-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
+  .progress-track {
+    height: 5px;
+    background: var(--gray-100);
+    border-radius: 3px;
     overflow: hidden;
+    margin: 8px 0 10px;
   }
 
   .progress-fill {
     height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.4s ease;
+    background: linear-gradient(90deg, var(--purple-500), var(--lilac-400));
+    border-radius: 3px;
     width: 0%;
+    transition: width 0.4s ease;
   }
 
   .progress-label {
-    font-size: 11px;
-    color: var(--text-muted);
     display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-soft); font-weight: 500;
   }
 
-  /* MAIN */
+  .clear-btn {
+    font-size: 11px;
+    color: var(--text-hint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 4px;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .clear-btn:hover { color: var(--red); }
+
+  /* ── MAIN ─────────────────────────────────────────── */
   .main {
-    margin-left: 260px;
-    flex: 1;
-    min-height: 100vh;
+    padding: 36px 44px;
+    overflow-y: auto;
+    height: calc(100vh - var(--topbar-h));
   }
 
-  .step-panel {
-    display: none;
-    padding: 48px 56px;
-    max-width: 900px;
-    animation: fadeIn 0.2s ease;
-  }
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
 
-  .step-panel.active { display: block; }
+  .page { display: none; max-width: 900px; }
+  .page.active { display: block; animation: fadeIn 0.2s ease; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .step-eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.15em;
+  .page-header { margin-bottom: 28px; }
+
+  .page-eyebrow {
+    font-family: 'Sora', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
+    color: var(--purple-400);
     margin-bottom: 8px;
-    font-family: 'JetBrains Mono', monospace;
   }
 
-  .step-title {
-    font-size: 28px;
+  .page-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px;
     font-weight: 700;
     color: var(--text);
-    line-height: 1.25;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
   }
 
-  .step-desc {
-    font-size: 14px;
-    color: var(--text-muted);
+  .page-desc {
+    font-size: 13.5px;
+    color: var(--text-soft);
+    max-width: 620px;
+    font-weight: 300;
     line-height: 1.7;
-    margin-bottom: 32px;
-    max-width: 680px;
   }
 
-  .step-desc strong { color: var(--text); font-weight: 500; }
+  .page-desc strong { color: var(--text); font-weight: 500; }
 
-  /* INFO BOX */
-  .info-box {
-    background: var(--accent-dim);
-    border: 1px solid rgba(242,101,34,0.25);
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 28px;
+  /* ── INFO CARD ────────────────────────────────────── */
+  .info-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 22px 26px;
+    margin-bottom: 22px;
   }
 
-  .info-box-label {
-    font-size: 10px;
+  .info-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-card-title::before {
+    content: '';
+    display: block;
+    width: 3px; height: 16px;
+    background: linear-gradient(180deg, var(--purple-500), var(--lilac-400));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .info-card p {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    padding-left: 13px;
+    font-weight: 300;
+  }
+  .info-card p + p { margin-top: 6px; }
+  .info-card p strong { color: var(--text); font-weight: 600; }
+
+  /* ── SECTION LABEL ────────────────────────────────── */
+  .section-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 8px;
+    color: var(--purple-400);
+    margin-bottom: 12px;
+    margin-top: 28px;
   }
 
-  .info-box p {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.6;
-  }
-
-  .info-box p + p { margin-top: 6px; }
-
-  /* SECTION LABEL */
-  .section-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 16px;
-    margin-top: 32px;
-  }
-
-  /* FORM ELEMENTS */
+  /* ── FIELDS ───────────────────────────────────────── */
   .field-group { margin-bottom: 20px; }
 
   .field-label {
@@ -235,85 +356,91 @@
   }
 
   .field-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
+    font-size: 11.5px;
+    color: var(--text-hint);
+    margin-top: 5px;
+    font-weight: 300;
   }
 
   .badge {
     font-size: 10px;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: 20px;
-    background: var(--accent-dim);
-    color: var(--accent);
+    background: var(--lilac-100);
+    color: var(--purple-500);
     font-weight: 600;
   }
 
-  .badge.blue { background: rgba(91,143,255,0.12); color: var(--accent2); }
+  .badge.green { background: var(--green-bg); color: var(--green); }
 
   input[type="text"], textarea, select {
     width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
     font-size: 13px;
     padding: 10px 14px;
+    border: 1.5px solid var(--border-md);
+    border-radius: var(--radius);
+    background: var(--gray-50);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.12s, box-shadow 0.12s, background 0.12s;
     outline: none;
-    transition: border-color 0.15s;
     resize: vertical;
   }
 
   input[type="text"]:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
+    border-color: var(--purple-400);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(124,63,204,0.1);
   }
+
+  input::placeholder, textarea::placeholder { color: var(--text-hint); font-weight: 300; }
 
   textarea { min-height: 90px; }
   textarea.tall { min-height: 140px; }
   textarea.short { min-height: 60px; }
 
-  /* RADIO GROUP */
-  .radio-group {
-    display: flex; gap: 10px; flex-wrap: wrap;
-  }
+  /* ── RADIO GROUP ──────────────────────────────────── */
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
 
   .radio-opt {
     display: flex; align-items: center; gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    background: var(--gray-50);
+    border: 1.5px solid var(--border-md);
+    border-radius: var(--radius);
     padding: 8px 14px;
     cursor: pointer;
     font-size: 13px;
-    transition: all 0.15s;
+    transition: all 0.12s;
     user-select: none;
+    color: var(--text-soft);
   }
 
-  .radio-opt:hover { border-color: var(--accent); }
-  .radio-opt input { accent-color: var(--accent); }
-  .radio-opt.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+  .radio-opt:hover { border-color: var(--purple-400); }
+  .radio-opt input { accent-color: var(--purple-500); }
+  .radio-opt.selected { border-color: var(--purple-400); background: var(--lilac-100); color: var(--purple-600); font-weight: 500; }
 
-  /* TABLE EDITOR */
+  /* ── TABLE EDITOR ─────────────────────────────────── */
   .table-editor {
-    background: var(--surface2);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
   }
 
   .table-editor table { width: 100%; border-collapse: collapse; }
 
   .table-editor th {
-    background: var(--border);
+    background: var(--gray-50);
     padding: 10px 12px;
     text-align: left;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
+    letter-spacing: 0.07em;
+    color: var(--text-soft);
+    font-family: 'Sora', sans-serif;
   }
 
   .table-editor td {
@@ -325,95 +452,113 @@
   .table-editor td input,
   .table-editor td textarea {
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background: transparent;
     resize: none;
-    font-size: 12px;
+    font-size: 12.5px;
     padding: 7px 8px;
   }
 
   .table-editor td input:focus,
   .table-editor td textarea:focus {
-    background: rgba(242,101,34,0.07);
-    border-color: transparent;
+    background: var(--lilac-50);
+    box-shadow: none;
   }
 
-  .example-row td { background: rgba(242,101,34,0.06); }
-  .example-row td input, .example-row td textarea { color: var(--text-muted); }
+  .example-row td { background: var(--lilac-50); }
+  .example-row td input, .example-row td textarea { color: var(--text-soft); }
 
   .add-row-btn {
     display: flex; align-items: center; gap: 8px;
-    background: none; border: 1px dashed var(--border);
-    color: var(--text-muted); font-size: 12px;
-    padding: 8px 14px; border-radius: 8px;
+    background: none; border: 1.5px dashed var(--border-md);
+    color: var(--text-soft); font-size: 12.5px;
+    padding: 9px 14px; border-radius: var(--radius);
     cursor: pointer; width: 100%;
     justify-content: center;
-    transition: all 0.15s;
-    font-family: 'Inter', sans-serif;
+    transition: all 0.12s;
+    font-family: 'DM Sans', sans-serif;
     margin-top: 8px;
   }
 
-  .add-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .add-row-btn:hover { border-color: var(--purple-400); color: var(--purple-500); background: var(--lilac-50); }
 
-  /* CHECKLIST */
+  /* ── CHECKLIST ────────────────────────────────────── */
   .checklist-item {
     display: flex; align-items: flex-start; gap: 14px;
-    background: var(--surface2);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 14px 16px;
     margin-bottom: 8px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.12s;
     user-select: none;
   }
 
-  .checklist-item:hover { border-color: var(--accent); }
-  .checklist-item.checked { border-color: var(--green); background: var(--green-dim); }
+  .checklist-item:hover { border-color: var(--purple-400); }
+  .checklist-item.checked { border-color: var(--green); background: var(--green-bg); }
 
   .check-box {
     width: 20px; height: 20px;
-    border-radius: 5px;
-    border: 2px solid var(--border);
+    border-radius: 6px;
+    border: 2px solid var(--border-md);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     margin-top: 1px;
-    transition: all 0.15s;
+    transition: all 0.12s;
     font-size: 12px;
+    color: #fff;
   }
 
   .checklist-item.checked .check-box { background: var(--green); border-color: var(--green); }
 
   .check-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-  .check-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .check-desc { font-size: 12px; color: var(--text-soft); line-height: 1.5; font-weight: 300; }
 
-  /* VARC */
+  /* ── VARC ─────────────────────────────────────────── */
   .varc-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 24px;
   }
 
   .varc-card {
-    background: var(--surface2);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
   }
 
   .varc-letter {
-    font-size: 24px;
-    font-weight: 700;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--accent);
+    font-family: 'Sora', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--purple-500);
     margin-bottom: 4px;
+    letter-spacing: -0.02em;
   }
 
-  .varc-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .varc-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+  .varc-name { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+  .varc-desc { font-size: 11.5px; color: var(--text-soft); line-height: 1.55; margin-bottom: 12px; font-weight: 300; }
 
-  /* NAVIGATION BUTTONS */
+  /* ── E-E-A-T DIMENSION CARDS ──────────────────────── */
+  .eeat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+  .eeat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+  }
+  .eeat-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 10.5px; font-weight: 700; color: var(--purple-500);
+    margin-bottom: 5px; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .eeat-card-desc { font-size: 12px; color: var(--text-soft); line-height: 1.55; font-weight: 300; }
+
+  /* ── NAV BUTTONS ──────────────────────────────────── */
   .step-nav {
     display: flex; justify-content: space-between; align-items: center;
     margin-top: 40px;
@@ -422,599 +567,736 @@
   }
 
   .btn {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 20px;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: var(--radius);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Inter', sans-serif;
+    transition: all 0.14s;
+    font-family: 'DM Sans', sans-serif;
     border: none;
+    outline: none;
+    letter-spacing: 0.01em;
   }
 
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #d9561e; }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); }
-  .btn-ghost { background: none; color: var(--text-muted); border: 1px solid transparent; }
-  .btn-ghost:hover { color: var(--text); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple-600), var(--purple-500));
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(90,45,158,0.3);
+  }
 
-  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--purple-700), var(--purple-600));
+    box-shadow: 0 4px 16px rgba(90,45,158,0.4);
+    transform: translateY(-1px);
+  }
 
-  /* WORD COUNT */
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-soft);
+    border: 1.5px solid var(--border-md);
+  }
+
+  .btn-ghost:hover { background: var(--gray-100); color: var(--text); }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--purple-600);
+    border: 1.5px solid var(--border-md);
+  }
+  .btn-secondary:hover { background: var(--lilac-50); border-color: var(--purple-400); }
+
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── WORD COUNT ───────────────────────────────────── */
   .word-count {
     font-size: 11px;
-    color: var(--text-dim);
+    color: var(--text-hint);
     text-align: right;
     margin-top: 4px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
   }
   .word-count.over { color: var(--red); }
   .word-count.ok { color: var(--green); }
 
-  /* COMPARE TABLE (Step 2) */
+  /* ── COMPARE TABLE (reference) ────────────────────── */
   .compare-table {
     width: 100%; border-collapse: collapse;
     margin-bottom: 24px;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
   }
   .compare-table th {
     padding: 10px 14px;
     text-align: left;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    letter-spacing: 0.07em;
+    color: var(--text-soft);
+    background: var(--gray-50);
+    font-family: 'Sora', sans-serif;
   }
   .compare-table td {
-    padding: 10px 14px;
-    font-size: 12px;
-    border: 1px solid var(--border);
+    padding: 12px 14px;
+    font-size: 12.5px;
+    border-top: 1px solid var(--border);
     vertical-align: top;
-    line-height: 1.5;
+    line-height: 1.55;
   }
   .compare-table td.good { color: var(--green); }
-  .compare-table td.bad { color: #e74c3c; }
+  .compare-table td.bad { color: var(--red); }
 
-  /* DIVIDER */
-  .divider { height: 1px; background: var(--border); margin: 28px 0; }
-
-  /* SUMMARY */
+  /* ── SUMMARY ──────────────────────────────────────── */
   .summary-panel {
-    background: var(--surface2);
+    background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
+    border-radius: var(--radius-xl);
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
   }
   .summary-step-title {
-    font-size: 11px;
+    font-family: 'Sora', sans-serif;
+    font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
+    color: var(--purple-400);
+    margin-bottom: 14px;
   }
-  .summary-field { margin-bottom: 10px; }
-  .summary-field-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
-  .summary-field-val { font-size: 13px; color: var(--text); }
+  .summary-field { margin-bottom: 12px; }
+  .summary-field-label { font-size: 11px; color: var(--text-hint); margin-bottom: 3px; font-weight: 500; }
+  .summary-field-val { font-size: 13px; color: var(--text); line-height: 1.6; }
 
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  /* ── FAQ ITEM ─────────────────────────────────────── */
+  .faq-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .faq-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple-500);
+    background: var(--lilac-100);
+    padding: 3px 9px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
 
+  /* ── EMAIL BANNER ─────────────────────────────────── */
+  .banner {
+    background: linear-gradient(135deg, var(--purple-800) 0%, var(--purple-500) 100%);
+    border-radius: var(--radius-xl);
+    padding: 22px 26px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .banner-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 700; margin-bottom: 6px; position: relative;
+  }
+  .banner-body {
+    font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,0.75);
+    max-width: 540px; font-weight: 300; position: relative;
+  }
+
+  /* ── TOAST ────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--purple-800);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(179,136,255,0.2);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── RESPONSIVE ───────────────────────────────────── */
   @media (max-width: 900px) {
-    .sidebar { width: 220px; }
-    .main { margin-left: 220px; }
-    .step-panel { padding: 32px 28px; }
-    .varc-grid { grid-template-columns: 1fr; }
+    .app { grid-template-columns: 1fr; grid-template-rows: var(--topbar-h) auto 1fr; }
+    .sidebar {
+      position: static; height: auto;
+      display: flex; flex-wrap: wrap;
+      padding: 10px; gap: 4px;
+      border-right: none; border-bottom: 1px solid var(--border);
+    }
+    .nav-section { display: none; }
+    .nav-item { width: auto; padding: 6px 12px; font-size: 12.5px; }
+    .nav-count { display: none; }
+    .sidebar-bottom { display: none; }
+    .main { padding: 20px 16px; height: auto; }
+    .varc-grid, .eeat-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-logo">Protocolo ARC</div>
-    <div class="sidebar-title">Plantilla GEO / AEO</div>
-    <div class="sidebar-subtitle">8 pasos para visibilidad en LLMs</div>
-  </div>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-wordmark">
+      <img src="data:image/png;base64,data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAADICAYAAAAeGRPoAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAExmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSfvu78nIGlkPSdXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQnPz4KPHg6eG1wbWV0YSB4bWxuczp4PSdhZG9iZTpuczptZXRhLyc+CjxyZGY6UkRGIHhtbG5zOnJkZj0naHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyc+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpBdHRyaWI9J2h0dHA6Ly9ucy5hdHRyaWJ1dGlvbi5jb20vYWRzLzEuMC8nPgogIDxBdHRyaWI6QWRzPgogICA8cmRmOlNlcT4KICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0nUmVzb3VyY2UnPgogICAgIDxBdHRyaWI6Q3JlYXRlZD4yMDI2LTAxLTAyPC9BdHRyaWI6Q3JlYXRlZD4KICAgICA8QXR0cmliOkV4dElkPjAyNDY5NWNiLWVkZDMtNDc0Ny04NjUyLWE5OTliMDUzOWE2NjwvQXR0cmliOkV4dElkPgogICAgIDxBdHRyaWI6RmJJZD41MjUyNjU5MTQxNzk1ODA8L0F0dHJpYjpGYklkPgogICAgIDxBdHRyaWI6VG91Y2hUeXBlPjI8L0F0dHJpYjpUb3VjaFR5cGU+CiAgICA8L3JkZjpsaT4KICAgPC9yZGY6U2VxPgogIDwvQXR0cmliOkFkcz4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6ZGM9J2h0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvJz4KICA8ZGM6dGl0bGU+CiAgIDxyZGY6QWx0PgogICAgPHJkZjpsaSB4bWw6bGFuZz0neC1kZWZhdWx0Jz5TYXJhdXRlciBMb2dvICg1MDAgeCAyMDAgcHgpIC0gMjwvcmRmOmxpPgogICA8L3JkZjpBbHQ+CiAgPC9kYzp0aXRsZT4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxy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" alt="SARAUTER" style="height:30px;width:auto;display:block;">
+    </div>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">Protocolo ARC · GEO / AEO</span>
+    <div class="topbar-right">
+      <span class="topbar-pill"><span class="save-dot" id="save-dot"></span><span id="save-indicator">Sin guardar</span></span>
+    </div>
+  </header>
 
-  <nav class="sidebar-nav">
-    <a class="nav-item active" onclick="goToStep(1)">
-      <span class="nav-num">1</span>
-      <span class="nav-label">Entidad y diferencial</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(2)">
-      <span class="nav-num">2</span>
-      <span class="nav-label">Zona Cero</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(3)">
-      <span class="nav-num">3</span>
-      <span class="nav-label">Cuerpo causal</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(4)">
-      <span class="nav-num">4</span>
-      <span class="nav-label">Tablas de datos</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(5)">
-      <span class="nav-num">5</span>
-      <span class="nav-label">E-E-A-T</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(6)">
-      <span class="nav-num">6</span>
-      <span class="nav-label">Bloque QA / FAQs</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(7)">
-      <span class="nav-num">7</span>
-      <span class="nav-label">Checklist de validación</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(8)">
-      <span class="nav-num">8</span>
-      <span class="nav-label">Medición VARC Score</span>
-    </a>
-    <a class="nav-item" onclick="goToStep(9)">
-      <span class="nav-num" style="background:rgba(91,143,255,0.2);color:var(--accent2)">✦</span>
-      <span class="nav-label">Resumen del contenido</span>
-    </a>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="nav-section">Protocolo ARC</div>
+    <button class="nav-item active" id="nav-1" onclick="goToStep(1)">
+      <span class="nav-icon">1</span>
+      Entidad y diferencial
+    </button>
+    <button class="nav-item" id="nav-2" onclick="goToStep(2)">
+      <span class="nav-icon">2</span>
+      Zona Cero
+    </button>
+    <button class="nav-item" id="nav-3" onclick="goToStep(3)">
+      <span class="nav-icon">3</span>
+      Cuerpo causal
+    </button>
+    <button class="nav-item" id="nav-4" onclick="goToStep(4)">
+      <span class="nav-icon">4</span>
+      Tablas de datos
+    </button>
+    <button class="nav-item" id="nav-5" onclick="goToStep(5)">
+      <span class="nav-icon">5</span>
+      E-E-A-T
+    </button>
+    <button class="nav-item" id="nav-6" onclick="goToStep(6)">
+      <span class="nav-icon">6</span>
+      Bloque QA / FAQs
+    </button>
+    <button class="nav-item" id="nav-7" onclick="goToStep(7)">
+      <span class="nav-icon">7</span>
+      Checklist
+    </button>
+    <button class="nav-item" id="nav-8" onclick="goToStep(8)">
+      <span class="nav-icon">8</span>
+      VARC Score
+    </button>
+
+    <div class="nav-section">Resultado</div>
+    <button class="nav-item" id="nav-9" onclick="goToStep(9)">
+      <span class="nav-icon">✦</span>
+      Resumen final
+    </button>
+
+    <div class="sidebar-bottom">
+      <div class="progress-label">
+        <span>Progreso</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <button class="clear-btn" onclick="clearAllData()">🗑 Borrar todos los datos</button>
+    </div>
   </nav>
 
-  <div class="sidebar-footer">
-    <div class="progress-label">
-      <span id="save-indicator" style="color:var(--text-dim)">Sin guardar</span>
-      <span></span>
-    </div>
-    <div class="progress-label">
-      <span>Progreso</span>
-      <span id="progress-pct">0%</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill"></div>
-    </div>
-    <button class="btn btn-ghost" style="font-size:11px;padding:6px 10px;justify-content:flex-start" onclick="clearAllData()">🗑 Borrar todos los datos</button>
-  </div>
-</aside>
+  <!-- MAIN -->
+  <main class="main">
+    <!-- PAGE 1 -->
+    <div class="page active" id="step-1">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 1 de 8</div>
+        <h1 class="page-title">Define tu entidad y tu diferencial</h1>
+        <p class="page-desc">Los LLMs no indexan palabras clave: indexan <strong>entidades</strong> y relaciones semánticas. Sin entidad bien definida y sin <strong>Information Gain</strong>, tu contenido compite con miles de páginas genéricas y el modelo citará otra fuente.</p>
+      </div>
 
-<!-- MAIN -->
-<main class="main">
+      <div class="info-card">
+        <div class="info-card-title">Instrucción clave</div>
+        <p>Responde las cuatro preguntas antes de escribir una sola línea de contenido. Son los cimientos de todo lo que construirás después.</p>
+        <p>Si no tienes un dato diferencial propio hoy, anota la pregunta de investigación interna que lo generaría.</p>
+      </div>
 
-  <!-- STEP 1 -->
-  <div class="step-panel active" id="step-1">
-    <div class="step-eyebrow">Paso 1 de 8</div>
-    <h1 class="step-title">Define tu entidad y tu diferencial</h1>
-    <p class="step-desc">Los LLMs no indexan palabras clave: indexan <strong>entidades</strong> y relaciones semánticas. Sin entidad bien definida y sin <strong>Information Gain</strong>, tu contenido compite con miles de páginas genéricas y el modelo citará otra fuente.</p>
+      <div class="field-group">
+        <div class="field-label">Entidad principal <span class="badge">keyword central</span></div>
+        <input type="text" id="s1-entidad" placeholder="Ej: Plataforma de automatización de marketing para pymes B2B" oninput="updateProgress()">
+        <div class="field-hint">El concepto exacto que quieres que los LLMs asocien contigo.</div>
+      </div>
 
-    <div class="info-box">
-      <div class="info-box-label">Instrucción clave</div>
-      <p>Responde las cuatro preguntas antes de escribir una sola línea de contenido. Son los cimientos de todo lo que construirás después.</p>
-      <p>Si no tienes un dato diferencial propio hoy, anota la pregunta de investigación interna que lo generaría.</p>
-    </div>
+      <div class="field-group">
+        <div class="field-label">Intención de búsqueda</div>
+        <div class="radio-group" id="s1-intencion">
+          <label class="radio-opt"><input type="radio" name="intencion" value="Informativa"> Informativa</label>
+          <label class="radio-opt"><input type="radio" name="intencion" value="Comercial"> Comercial</label>
+          <label class="radio-opt"><input type="radio" name="intencion" value="Transaccional"> Transaccional</label>
+        </div>
+      </div>
 
-    <div class="field-group">
-      <div class="field-label">Entidad principal <span class="badge">keyword central</span></div>
-      <input type="text" id="s1-entidad" placeholder="Ej: Plataforma de automatización de marketing para pymes B2B" oninput="updateProgress()">
-      <div class="field-hint">El concepto exacto que quieres que los LLMs asocien contigo.</div>
-    </div>
+      <div class="field-group">
+        <div class="field-label">Entidades adyacentes <span class="badge">3–5 conceptos</span></div>
+        <input type="text" id="s1-adyacentes" placeholder="Ej: CRM, lead scoring, email marketing, nurturing, inbound" oninput="updateProgress()">
+        <div class="field-hint">Conceptos semánticamente relacionados que deben aparecer en el texto de forma natural.</div>
+      </div>
 
-    <div class="field-group">
-      <div class="field-label">Intención de búsqueda</div>
-      <div class="radio-group" id="s1-intencion">
-        <label class="radio-opt"><input type="radio" name="intencion" value="Informativa"> Informativa</label>
-        <label class="radio-opt"><input type="radio" name="intencion" value="Comercial"> Comercial</label>
-        <label class="radio-opt"><input type="radio" name="intencion" value="Transaccional"> Transaccional</label>
+      <div class="field-group">
+        <div class="field-label">Information Gain <span class="badge green">tu dato único</span></div>
+        <textarea id="s1-gain" placeholder="¿Qué dato, métrica o insight tienes que ninguna otra fuente publica? Ej: Las empresas que aplican X reducen Y un 34% en 90 días." oninput="updateProgress()"></textarea>
+        <div class="field-hint">Este dato es el motivo por el que un LLM te citará a ti y no a otra fuente genérica.</div>
+      </div>
+
+      <div class="step-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="goToStep(2)">Siguiente: Zona Cero →</button>
       </div>
     </div>
 
-    <div class="field-group">
-      <div class="field-label">Entidades adyacentes <span class="badge">3–5 conceptos</span></div>
-      <input type="text" id="s1-adyacentes" placeholder="Ej: CRM, lead scoring, email marketing, nurturing, inbound" oninput="updateProgress()">
-      <div class="field-hint">Conceptos semánticamente relacionados que deben aparecer en el texto de forma natural.</div>
-    </div>
+    <!-- PAGE 2 -->
+    <div class="page" id="step-2">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 2 de 8</div>
+        <h1 class="page-title">Zona Cero — La respuesta directa</h1>
+        <p class="page-desc">El H1 más el resumen inicial son lo primero que los LLMs extraen. Si no es claro y directo, el modelo buscará otra fuente. <strong>Es tu primera línea de visibilidad generativa.</strong></p>
+      </div>
 
-    <div class="field-group">
-      <div class="field-label">Information Gain <span class="badge" style="background:rgba(46,204,113,0.1);color:#2ecc71">tu dato único</span></div>
-      <textarea id="s1-gain" placeholder="¿Qué dato, métrica o insight tienes que ninguna otra fuente publica? Ej: Las empresas que aplican X reducen Y un 34% en 90 días." oninput="updateProgress()"></textarea>
-      <div class="field-hint">Este dato es el motivo por el que un LLM te citará a ti y no a otra fuente genérica.</div>
-    </div>
+      <div class="info-card">
+        <div class="info-card-title">Regla de la Zona Cero</div>
+        <p><strong>Máximo 50 palabras. Estructura: Sujeto + Verbo + Predicado.</strong></p>
+        <p>Sin frases de introducción. Sin relleno. La primera frase debe responder directamente la pregunta que el usuario haría a un LLM. Incluye siempre al menos un dato medible propio.</p>
+      </div>
 
-    <div class="step-nav">
-      <div></div>
-      <button class="btn btn-primary" onclick="goToStep(2)">Siguiente: Zona Cero →</button>
-    </div>
-  </div>
-
-  <!-- STEP 2 -->
-  <div class="step-panel" id="step-2">
-    <div class="step-eyebrow">Paso 2 de 8</div>
-    <h1 class="step-title">Zona Cero — La respuesta directa</h1>
-    <p class="step-desc">El H1 más el resumen inicial son lo primero que los LLMs extraen. Si no es claro y directo, el modelo buscará otra fuente. <strong>Es tu primera línea de visibilidad generativa.</strong></p>
-
-    <div class="info-box">
-      <div class="info-box-label">Regla de la Zona Cero</div>
-      <p><strong>Máximo 50 palabras. Estructura: Sujeto + Verbo + Predicado.</strong></p>
-      <p>Sin frases de introducción. Sin relleno. La primera frase debe responder directamente la pregunta que el usuario haría a un LLM. Incluye siempre al menos un dato medible propio.</p>
-    </div>
-
-    <div class="section-label">Referencia — Correcto vs. Incorrecto</div>
-    <table class="compare-table">
-      <thead><tr><th>Elemento</th><th>✓ Correcto</th><th>✗ Incorrecto</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>H1</td>
-          <td class="good">Automatización de marketing para pymes B2B: qué es y cómo reduce el ciclo de venta un 34%</td>
-          <td class="bad">Todo lo que necesitas saber sobre automatización de marketing en 2025</td>
-        </tr>
-        <tr>
-          <td>Resumen</td>
-          <td class="good">S + V + P. Dato medible incluido. Sin introducción.</td>
-          <td class="bad">Introducción genérica, sin sujeto claro, sin dato diferencial.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="field-group">
-      <div class="field-label">H1 — Título principal <span class="badge">entidad + dato diferencial</span></div>
-      <input type="text" id="s2-h1" placeholder="Ej: [Tu entidad]: qué es y cómo [resultado medible] un X%" oninput="updateProgress()">
-    </div>
-
-    <div class="field-group">
-      <div class="field-label">Resumen atómico <span class="badge">máx. 50 palabras</span></div>
-      <textarea id="s2-resumen" class="short" placeholder="Empieza con el sujeto. Sin 'descubre cómo...' ni introducciones. Estructura: S + V + P + dato medible propio." oninput="countWords(this, 'wc-resumen', 50)"></textarea>
-      <div class="word-count" id="wc-resumen">0 / 50 palabras</div>
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(1)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(3)">Siguiente: Cuerpo causal →</button>
-    </div>
-  </div>
-
-  <!-- STEP 3 -->
-  <div class="step-panel" id="step-3">
-    <div class="step-eyebrow">Paso 3 de 8</div>
-    <h1 class="step-title">Cuerpo técnico causal</h1>
-    <p class="step-desc">Los LLMs buscan conexiones causales: "porque", "lo que permite", "el resultado es". El patrón <strong>Característica → Mecanismo → Resultado</strong> hace que el modelo te cite como referencia técnica, no solo como fuente de datos genéricos.</p>
-
-    <div class="info-box">
-      <div class="info-box-label">Patrón por cada bloque</div>
-      <p><strong>Característica:</strong> qué tiene o hace tu producto/servicio/metodología.</p>
-      <p><strong>Mecanismo:</strong> cómo lo hace — el proceso técnico o metodológico, paso a paso.</p>
-      <p><strong>Resultado:</strong> qué consigue el usuario como consecuencia directa y medible.</p>
-    </div>
-
-    <div class="section-label">Tu tabla de razonamiento causal — mínimo 3 tripletas</div>
-
-    <div class="table-editor">
-      <table id="causal-table">
-        <thead>
-          <tr>
-            <th style="width:28%">Característica</th>
-            <th style="width:42%">Mecanismo (cómo funciona)</th>
-            <th style="width:30%">Resultado medible</th>
-          </tr>
-        </thead>
+      <div class="section-label">Referencia — Correcto vs. Incorrecto</div>
+      <table class="compare-table">
+        <thead><tr><th>Elemento</th><th>✓ Correcto</th><th>✗ Incorrecto</th></tr></thead>
         <tbody>
-          <tr class="example-row">
-            <td><input type="text" value="EJEMPLO: Seguimiento automático basado en comportamiento" readonly></td>
-            <td><textarea readonly style="min-height:60px">El sistema detecta cuándo un lead abre un email o visita la página de precios y activa automáticamente la secuencia comercial correspondiente, sin intervención manual.</textarea></td>
-            <td><input type="text" value="Conversión de MQL a SQL +28% en 60 días."></td>
+          <tr>
+            <td>H1</td>
+            <td class="good">Automatización de marketing para pymes B2B: qué es y cómo reduce el ciclo de venta un 34%</td>
+            <td class="bad">Todo lo que necesitas saber sobre automatización de marketing en 2025</td>
           </tr>
           <tr>
-            <td><input type="text" placeholder="Tu característica 1" oninput="updateProgress()"></td>
-            <td><textarea placeholder="¿Cómo funciona técnicamente? Describe el proceso paso a paso." oninput="updateProgress()"></textarea></td>
-            <td><input type="text" placeholder="Resultado concreto y medible" oninput="updateProgress()"></td>
-          </tr>
-          <tr>
-            <td><input type="text" placeholder="Tu característica 2"></td>
-            <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
-            <td><input type="text" placeholder="Resultado medible"></td>
-          </tr>
-          <tr>
-            <td><input type="text" placeholder="Tu característica 3"></td>
-            <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
-            <td><input type="text" placeholder="Resultado medible"></td>
+            <td>Resumen</td>
+            <td class="good">S + V + P. Dato medible incluido. Sin introducción.</td>
+            <td class="bad">Introducción genérica, sin sujeto claro, sin dato diferencial.</td>
           </tr>
         </tbody>
       </table>
-    </div>
-    <button class="add-row-btn" onclick="addCausalRow()">+ Añadir otra tripleta</button>
 
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(2)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(4)">Siguiente: Tablas →</button>
-    </div>
-  </div>
+      <div class="field-group">
+        <div class="field-label">H1 — Título principal <span class="badge">entidad + dato diferencial</span></div>
+        <input type="text" id="s2-h1" placeholder="Ej: [Tu entidad]: qué es y cómo [resultado medible] un X%" oninput="updateProgress()">
+      </div>
 
-  <!-- STEP 4 -->
-  <div class="step-panel" id="step-4">
-    <div class="step-eyebrow">Paso 4 de 8</div>
-    <h1 class="step-title">Tablas de datos comparativas</h1>
-    <p class="step-desc">Los agentes de IA priorizan la información tabular para preguntas de comparación y especificación técnica. Una tabla bien estructurada puede ser citada directamente sin que el usuario llegue a tu web.</p>
+      <div class="field-group">
+        <div class="field-label">Resumen atómico <span class="badge">máx. 50 palabras</span></div>
+        <textarea id="s2-resumen" class="short" placeholder="Empieza con el sujeto. Sin 'descubre cómo...' ni introducciones. Estructura: S + V + P + dato medible propio." oninput="countWords(this, 'wc-resumen', 50)"></textarea>
+        <div class="word-count" id="wc-resumen">0 / 50 palabras</div>
+      </div>
 
-    <div class="info-box">
-      <div class="info-box-label">Patrón recomendado</div>
-      <p>Cualquier comparativa, especificación técnica o proceso con más de 3 pasos debería presentarse en tabla.</p>
-      <p>Formato: <strong>Criterio | Descripción | Valor o Resultado</strong>. El texto narrativo complementa, no sustituye.</p>
-    </div>
-
-    <div class="section-label">¿Qué tipo de tabla necesitas?</div>
-    <div class="radio-group" style="margin-bottom:24px" id="s4-tipo">
-      <label class="radio-opt"><input type="radio" name="tipotabla" value="comparativa"> Comparativa (A vs B)</label>
-      <label class="radio-opt"><input type="radio" name="tipotabla" value="especificacion"> Especificación técnica</label>
-      <label class="radio-opt"><input type="radio" name="tipotabla" value="proceso"> Proceso paso a paso</label>
-    </div>
-
-    <div class="field-group">
-      <div class="field-label">Cabeceras de columna</div>
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1" oninput="localStorage.setItem('geo-arc-col1',this.value)">
-        <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1" oninput="localStorage.setItem('geo-arc-col2',this.value)">
-        <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1" oninput="localStorage.setItem('geo-arc-col3',this.value)">
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(1)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(3)">Siguiente: Cuerpo causal →</button>
       </div>
     </div>
 
-    <div class="table-editor">
-      <table id="datos-table">
-        <thead>
-          <tr>
-            <th style="width:33%">Criterio / Item</th>
-            <th style="width:33%">Valor / Situación A</th>
-            <th style="width:33%">Valor / Situación B</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="example-row">
-            <td><input type="text" value="EJEMPLO: Tiempo de respuesta al lead" readonly></td>
-            <td><input type="text" value="6-48 horas" readonly></td>
-            <td><input type="text" value="< 5 minutos" readonly></td>
-          </tr>
-          <tr>
-            <td><input type="text" placeholder="Criterio 1" oninput="updateProgress()"></td>
-            <td><input type="text" placeholder="Valor A"></td>
-            <td><input type="text" placeholder="Valor B"></td>
-          </tr>
-          <tr>
-            <td><input type="text" placeholder="Criterio 2"></td>
-            <td><input type="text" placeholder="Valor A"></td>
-            <td><input type="text" placeholder="Valor B"></td>
-          </tr>
-          <tr>
-            <td><input type="text" placeholder="Criterio 3"></td>
-            <td><input type="text" placeholder="Valor A"></td>
-            <td><input type="text" placeholder="Valor B"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button class="add-row-btn" onclick="addDatosRow()">+ Añadir fila</button>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(3)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(5)">Siguiente: E-E-A-T →</button>
-    </div>
-  </div>
-
-  <!-- STEP 5 -->
-  <div class="step-panel" id="step-5">
-    <div class="step-eyebrow">Paso 5 de 8</div>
-    <h1 class="step-title">Autoridad y confianza — E-E-A-T</h1>
-    <p class="step-desc">Google y los LLMs aplican E-E-A-T para decidir qué fuentes citar. Un contenido sin respaldo externo puede ser correcto, pero los modelos lo tratan como "opinión sin verificar". <strong>No basta con tenerlo: hay que hacerlo visible.</strong></p>
-
-    <div class="info-box">
-      <div class="info-box-label">Formato de cada afirmación</div>
-      <p>[Afirmación con el dato concreto] (Fuente: Nombre, Año — URL completa)</p>
-      <p>El modelo verifica entidad + año + URL antes de aceptar la fuente como fiable.</p>
-    </div>
-
-    <div class="section-label">Las 4 dimensiones E-E-A-T</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px">
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">EXPERIENCIA</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Casos reales con fechas, datos propios de clientes, resultados documentados.</div>
+    <!-- PAGE 3 -->
+    <div class="page" id="step-3">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 3 de 8</div>
+        <h1 class="page-title">Cuerpo técnico causal</h1>
+        <p class="page-desc">Los LLMs buscan conexiones causales: "porque", "lo que permite", "el resultado es". El patrón <strong>Característica → Mecanismo → Resultado</strong> hace que el modelo te cite como referencia técnica, no solo como fuente de datos genéricos.</p>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">ESPECIALIZACIÓN</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Terminología precisa, cita de estudios, metodología propia, autoría firmada con credenciales.</div>
+
+      <div class="info-card">
+        <div class="info-card-title">Patrón por cada bloque</div>
+        <p><strong>Característica:</strong> qué tiene o hace tu producto/servicio/metodología.</p>
+        <p><strong>Mecanismo:</strong> cómo lo hace — el proceso técnico o metodológico, paso a paso.</p>
+        <p><strong>Resultado:</strong> qué consigue el usuario como consecuencia directa y medible.</p>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">AUTORIDAD</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Menciones en prensa, certificaciones verificables, partnerships reconocidos, publicaciones del sector.</div>
+
+      <div class="section-label">Tu tabla de razonamiento causal — mínimo 3 tripletas</div>
+
+      <div class="table-editor">
+        <table id="causal-table">
+          <thead>
+            <tr>
+              <th style="width:28%">Característica</th>
+              <th style="width:42%">Mecanismo (cómo funciona)</th>
+              <th style="width:30%">Resultado medible</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="example-row">
+              <td><input type="text" value="EJEMPLO: Seguimiento automático basado en comportamiento" readonly></td>
+              <td><textarea readonly style="min-height:60px">El sistema detecta cuándo un lead abre un email o visita la página de precios y activa automáticamente la secuencia comercial correspondiente, sin intervención manual.</textarea></td>
+              <td><input type="text" value="Conversión de MQL a SQL +28% en 60 días." readonly></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Tu característica 1" oninput="updateProgress()"></td>
+              <td><textarea placeholder="¿Cómo funciona técnicamente? Describe el proceso paso a paso." oninput="updateProgress()"></textarea></td>
+              <td><input type="text" placeholder="Resultado concreto y medible" oninput="updateProgress()"></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Tu característica 2"></td>
+              <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
+              <td><input type="text" placeholder="Resultado medible"></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Tu característica 3"></td>
+              <td><textarea placeholder="¿Cómo funciona?"></textarea></td>
+              <td><input type="text" placeholder="Resultado medible"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">CONFIANZA</div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Fecha de actualización visible, autoría firmada, fuentes externas enlazadas.</div>
+      <button class="add-row-btn" onclick="addCausalRow()">+ Añadir otra tripleta</button>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(2)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(4)">Siguiente: Tablas →</button>
       </div>
     </div>
 
-    <div class="section-label">Tus afirmaciones acreditadas — mínimo 3</div>
-
-    <div class="table-editor">
-      <table id="eeat-table">
-        <thead>
-          <tr>
-            <th style="width:45%">Afirmación + dato medible</th>
-            <th style="width:20%">Fuente</th>
-            <th style="width:10%">Año</th>
-            <th style="width:25%">URL</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="example-row">
-            <td><textarea style="min-height:48px" readonly>El tráfico referido desde interfaces de IA creció un 1.300% en 2024.</textarea></td>
-            <td><input type="text" value="Semrush" readonly></td>
-            <td><input type="text" value="2025" readonly style="width:60px"></td>
-            <td><input type="text" value="semrush.com/es/blog/informe-trafico-ia" readonly></td>
-          </tr>
-          <tr>
-            <td><textarea style="min-height:48px" placeholder="Escribe tu afirmación con dato concreto..." oninput="updateProgress()"></textarea></td>
-            <td><input type="text" placeholder="Fuente"></td>
-            <td><input type="text" placeholder="2024" style="width:60px"></td>
-            <td><input type="text" placeholder="URL o 'pendiente'"></td>
-          </tr>
-          <tr>
-            <td><textarea style="min-height:48px" placeholder="Afirmación 2..."></textarea></td>
-            <td><input type="text" placeholder="Fuente"></td>
-            <td><input type="text" placeholder="2024" style="width:60px"></td>
-            <td><input type="text" placeholder="URL"></td>
-          </tr>
-          <tr>
-            <td><textarea style="min-height:48px" placeholder="Afirmación 3..."></textarea></td>
-            <td><input type="text" placeholder="Fuente"></td>
-            <td><input type="text" placeholder="2024" style="width:60px"></td>
-            <td><input type="text" placeholder="URL"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button class="add-row-btn" onclick="addEeatRow()">+ Añadir afirmación</button>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(4)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(6)">Siguiente: FAQs →</button>
-    </div>
-  </div>
-
-  <!-- STEP 6 -->
-  <div class="step-panel" id="step-6">
-    <div class="step-eyebrow">Paso 6 de 8</div>
-    <h1 class="step-title">Bloque QA para motores generativos</h1>
-    <p class="step-desc">Si no tienes un bloque QA en tu contenido, el modelo responderá usando fuentes de la competencia. <strong>Cada FAQ debe ser autocontenida:</strong> el LLM debe poder usarla directamente, sin necesitar el resto del texto.</p>
-
-    <div class="info-box">
-      <div class="info-box-label">Reglas del bloque QA</div>
-      <p>Mínimo 6 preguntas. Recomendado: 8. Cada respuesta: máximo 60 palabras. Empieza con la respuesta directa, no con contexto.</p>
-      <p>Cubre el ciclo completo: definición → comparación → coste → implementación → requisitos → beneficio → tiempo → diferencial.</p>
-    </div>
-
-    <div id="faq-container"></div>
-    <button class="add-row-btn" onclick="addFaq()">+ Añadir pregunta</button>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(5)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(7)">Siguiente: Checklist →</button>
-    </div>
-  </div>
-
-  <!-- STEP 7 -->
-  <div class="step-panel" id="step-7">
-    <div class="step-eyebrow">Paso 7 de 8</div>
-    <h1 class="step-title">Checklist de validación GEO</h1>
-    <p class="step-desc">Antes de publicar, pasa este checklist. Un "No" o "Pendiente" en cualquier criterio reduce las probabilidades de que el contenido sea citado por un LLM. Haz clic en cada ítem para marcarlo.</p>
-
-    <div id="checklist-container"></div>
-
-    <div style="margin-top:24px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Criterios cumplidos</div>
-        <div style="font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)" id="check-score">0 / 9</div>
+    <!-- PAGE 4 -->
+    <div class="page" id="step-4">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 4 de 8</div>
+        <h1 class="page-title">Tablas de datos comparativas</h1>
+        <p class="page-desc">Los agentes de IA priorizan la información tabular para preguntas de comparación y especificación técnica. Una tabla bien estructurada puede ser citada directamente sin que el usuario llegue a tu web.</p>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Estado</div>
-        <div style="font-size:13px;font-weight:600" id="check-status">Completa los criterios</div>
+
+      <div class="info-card">
+        <div class="info-card-title">Patrón recomendado</div>
+        <p>Cualquier comparativa, especificación técnica o proceso con más de 3 pasos debería presentarse en tabla.</p>
+        <p>Formato: <strong>Criterio | Descripción | Valor o Resultado</strong>. El texto narrativo complementa, no sustituye.</p>
+      </div>
+
+      <div class="section-label">¿Qué tipo de tabla necesitas?</div>
+      <div class="radio-group" style="margin-bottom:24px" id="s4-tipo">
+        <label class="radio-opt"><input type="radio" name="tipotabla" value="comparativa"> Comparativa (A vs B)</label>
+        <label class="radio-opt"><input type="radio" name="tipotabla" value="especificacion"> Especificación técnica</label>
+        <label class="radio-opt"><input type="radio" name="tipotabla" value="proceso"> Proceso paso a paso</label>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Cabeceras de columna</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1">
+          <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1">
+          <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1">
+        </div>
+      </div>
+
+      <div class="table-editor">
+        <table id="datos-table">
+          <thead>
+            <tr>
+              <th style="width:33%">Criterio / Item</th>
+              <th style="width:33%">Valor / Situación A</th>
+              <th style="width:33%">Valor / Situación B</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="example-row">
+              <td><input type="text" value="EJEMPLO: Tiempo de respuesta al lead" readonly></td>
+              <td><input type="text" value="6-48 horas" readonly></td>
+              <td><input type="text" value="&lt; 5 minutos" readonly></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Criterio 1" oninput="updateProgress()"></td>
+              <td><input type="text" placeholder="Valor A"></td>
+              <td><input type="text" placeholder="Valor B"></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Criterio 2"></td>
+              <td><input type="text" placeholder="Valor A"></td>
+              <td><input type="text" placeholder="Valor B"></td>
+            </tr>
+            <tr>
+              <td><input type="text" placeholder="Criterio 3"></td>
+              <td><input type="text" placeholder="Valor A"></td>
+              <td><input type="text" placeholder="Valor B"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addDatosRow()">+ Añadir fila</button>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(3)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(5)">Siguiente: E-E-A-T →</button>
       </div>
     </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(6)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(8)">Siguiente: VARC Score →</button>
-    </div>
-  </div>
-
-  <!-- STEP 8 -->
-  <div class="step-panel" id="step-8">
-    <div class="step-eyebrow">Paso 8 de 8</div>
-    <h1 class="step-title">Medición — VARC Score</h1>
-    <p class="step-desc">El Protocolo ARC no termina en la publicación. Sin medición no hay mejora. El VARC Score evalúa el rendimiento de tu contenido en los motores de IA generativa de forma sistemática y continua.</p>
-
-    <div class="varc-grid">
-      <div class="varc-card">
-        <div class="varc-letter">V</div>
-        <div class="varc-name">Visibilidad Generativa</div>
-        <div class="varc-desc">Cuántas veces aparece tu marca en respuestas de los LLMs monitorizados. KPI: AI Visibility Score (0-100). Frecuencia: semanal.</div>
-        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" id="varc-v" placeholder="Ej: Semrush AIO / revisión manual semanal" oninput="updateProgress()">
+    <!-- PAGE 5 -->
+    <div class="page" id="step-5">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 5 de 8</div>
+        <h1 class="page-title">Autoridad y confianza — E-E-A-T</h1>
+        <p class="page-desc">Google y los LLMs aplican E-E-A-T para decidir qué fuentes citar. Un contenido sin respaldo externo puede ser correcto, pero los modelos lo tratan como "opinión sin verificar". <strong>No basta con tenerlo: hay que hacerlo visible.</strong></p>
       </div>
-      <div class="varc-card">
-        <div class="varc-letter" style="color:var(--accent2)">A</div>
-        <div class="varc-name">Autoridad de Fuente</div>
-        <div class="varc-desc">Con qué frecuencia te citan vs. competidores directos. KPI: Share of Voice generativo (%). Frecuencia: mensual.</div>
-        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" id="varc-a" placeholder="Ej: Prompts manuales en ChatGPT, Gemini, Perplexity" oninput="updateProgress()">
+
+      <div class="info-card">
+        <div class="info-card-title">Formato de cada afirmación</div>
+        <p>[Afirmación con el dato concreto] (Fuente: Nombre, Año — URL completa)</p>
+        <p>El modelo verifica entidad + año + URL antes de aceptar la fuente como fiable.</p>
       </div>
-      <div class="varc-card">
-        <div class="varc-letter" style="color:var(--green)">R</div>
-        <div class="varc-name">Reputación en IA</div>
-        <div class="varc-desc">Precisión y tono de las menciones. ¿Qué dice la IA sobre tu marca y es correcto? KPI: % menciones sin errores. Mensual.</div>
-        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" id="varc-r" placeholder="Ej: Auditoría manual mensual de menciones" oninput="updateProgress()">
+
+      <div class="section-label">Las 4 dimensiones E-E-A-T</div>
+      <div class="eeat-grid">
+        <div class="eeat-card">
+          <div class="eeat-card-title">Experiencia</div>
+          <div class="eeat-card-desc">Casos reales con fechas, datos propios de clientes, resultados documentados.</div>
+        </div>
+        <div class="eeat-card">
+          <div class="eeat-card-title">Especialización</div>
+          <div class="eeat-card-desc">Terminología precisa, cita de estudios, metodología propia, autoría firmada con credenciales.</div>
+        </div>
+        <div class="eeat-card">
+          <div class="eeat-card-title">Autoridad</div>
+          <div class="eeat-card-desc">Menciones en prensa, certificaciones verificables, partnerships reconocidos, publicaciones del sector.</div>
+        </div>
+        <div class="eeat-card">
+          <div class="eeat-card-title">Confianza</div>
+          <div class="eeat-card-desc">Fecha de actualización visible, autoría firmada, fuentes externas enlazadas.</div>
+        </div>
       </div>
-      <div class="varc-card">
-        <div class="varc-letter" style="color:#e67e22">C</div>
-        <div class="varc-name">Conversión desde IA</div>
-        <div class="varc-desc">Tráfico y leads que llegan desde interfaces generativas. KPI: sesiones con fuente "AI referral". Frecuencia: semanal.</div>
-        <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" id="varc-c" placeholder="Ej: GA4 + UTMs etiquetados por canal IA" oninput="updateProgress()">
+
+      <div class="section-label">Tus afirmaciones acreditadas — mínimo 3</div>
+
+      <div class="table-editor">
+        <table id="eeat-table">
+          <thead>
+            <tr>
+              <th style="width:45%">Afirmación + dato medible</th>
+              <th style="width:20%">Fuente</th>
+              <th style="width:10%">Año</th>
+              <th style="width:25%">URL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="example-row">
+              <td><textarea style="min-height:48px" readonly>El tráfico referido desde interfaces de IA creció un 1.300% en 2024.</textarea></td>
+              <td><input type="text" value="Semrush" readonly></td>
+              <td><input type="text" value="2025" readonly style="width:60px"></td>
+              <td><input type="text" value="semrush.com/es/blog/informe-trafico-ia" readonly></td>
+            </tr>
+            <tr>
+              <td><textarea style="min-height:48px" placeholder="Escribe tu afirmación con dato concreto..." oninput="updateProgress()"></textarea></td>
+              <td><input type="text" placeholder="Fuente"></td>
+              <td><input type="text" placeholder="2024" style="width:60px"></td>
+              <td><input type="text" placeholder="URL o 'pendiente'"></td>
+            </tr>
+            <tr>
+              <td><textarea style="min-height:48px" placeholder="Afirmación 2..."></textarea></td>
+              <td><input type="text" placeholder="Fuente"></td>
+              <td><input type="text" placeholder="2024" style="width:60px"></td>
+              <td><input type="text" placeholder="URL"></td>
+            </tr>
+            <tr>
+              <td><textarea style="min-height:48px" placeholder="Afirmación 3..."></textarea></td>
+              <td><input type="text" placeholder="Fuente"></td>
+              <td><input type="text" placeholder="2024" style="width:60px"></td>
+              <td><input type="text" placeholder="URL"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addEeatRow()">+ Añadir afirmación</button>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(4)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(6)">Siguiente: FAQs →</button>
       </div>
     </div>
 
-    <div class="field-group">
-      <div class="field-label">URL donde se publicará este contenido</div>
-      <input type="text" id="varc-url" placeholder="https://tudominio.com/pagina-del-contenido" oninput="updateProgress()">
-      <div class="field-hint">Los LLMs necesitan indexar una URL pública. No guardes este trabajo en un PDF interno.</div>
+    <!-- PAGE 6 -->
+    <div class="page" id="step-6">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 6 de 8</div>
+        <h1 class="page-title">Bloque QA para motores generativos</h1>
+        <p class="page-desc">Si no tienes un bloque QA en tu contenido, el modelo responderá usando fuentes de la competencia. <strong>Cada FAQ debe ser autocontenida:</strong> el LLM debe poder usarla directamente, sin necesitar el resto del texto.</p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">Reglas del bloque QA</div>
+        <p>Mínimo 6 preguntas. Recomendado: 8. Cada respuesta: máximo 60 palabras. Empieza con la respuesta directa, no con contexto.</p>
+        <p>Cubre el ciclo completo: definición → comparación → coste → implementación → requisitos → beneficio → tiempo → diferencial.</p>
+      </div>
+
+      <div id="faq-container"></div>
+      <button class="add-row-btn" onclick="addFaq()">+ Añadir pregunta</button>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(5)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(7)">Siguiente: Checklist →</button>
+      </div>
     </div>
 
-    <div class="field-group">
-      <div class="field-label">Fecha de publicación prevista</div>
-      <input type="text" id="varc-fecha" placeholder="Ej: 25 junio 2026" oninput="updateProgress()">
+    <!-- PAGE 7 -->
+    <div class="page" id="step-7">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 7 de 8</div>
+        <h1 class="page-title">Checklist de validación GEO</h1>
+        <p class="page-desc">Antes de publicar, pasa este checklist. Un "No" o "Pendiente" en cualquier criterio reduce las probabilidades de que el contenido sea citado por un LLM. Haz clic en cada ítem para marcarlo.</p>
+      </div>
+
+      <div id="checklist-container"></div>
+
+      <div class="info-card" style="margin-top:24px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px;font-weight:500">Criterios cumplidos</div>
+          <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--purple-500)" id="check-score">0 / 9</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px;font-weight:500">Estado</div>
+          <div style="font-size:13px;font-weight:600" id="check-status">Completa los criterios</div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(6)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(8)">Siguiente: VARC Score →</button>
+      </div>
     </div>
 
-    <div class="field-group">
-      <div class="field-label">Notas de seguimiento</div>
-      <textarea id="varc-notas" placeholder="Próximos pasos, responsable, fecha de revisión VARC..." oninput="updateProgress()"></textarea>
+    <!-- PAGE 8 -->
+    <div class="page" id="step-8">
+      <div class="page-header">
+        <div class="page-eyebrow">Paso 8 de 8</div>
+        <h1 class="page-title">Medición — VARC Score</h1>
+        <p class="page-desc">El Protocolo ARC no termina en la publicación. Sin medición no hay mejora. El VARC Score evalúa el rendimiento de tu contenido en los motores de IA generativa de forma sistemática y continua.</p>
+      </div>
+
+      <div class="varc-grid">
+        <div class="varc-card">
+          <div class="varc-letter">V</div>
+          <div class="varc-name">Visibilidad Generativa</div>
+          <div class="varc-desc">Cuántas veces aparece tu marca en respuestas de los LLMs monitorizados. KPI: AI Visibility Score (0-100). Frecuencia: semanal.</div>
+          <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+          <input type="text" id="varc-v" placeholder="Ej: Semrush AIO / revisión manual semanal" oninput="updateProgress()">
+        </div>
+        <div class="varc-card">
+          <div class="varc-letter">A</div>
+          <div class="varc-name">Autoridad de Fuente</div>
+          <div class="varc-desc">Con qué frecuencia te citan vs. competidores directos. KPI: Share of Voice generativo (%). Frecuencia: mensual.</div>
+          <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+          <input type="text" id="varc-a" placeholder="Ej: Prompts manuales en ChatGPT, Gemini, Perplexity" oninput="updateProgress()">
+        </div>
+        <div class="varc-card">
+          <div class="varc-letter">R</div>
+          <div class="varc-name">Reputación en IA</div>
+          <div class="varc-desc">Precisión y tono de las menciones. ¿Qué dice la IA sobre tu marca y es correcto? KPI: % menciones sin errores. Mensual.</div>
+          <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+          <input type="text" id="varc-r" placeholder="Ej: Auditoría manual mensual de menciones" oninput="updateProgress()">
+        </div>
+        <div class="varc-card">
+          <div class="varc-letter">C</div>
+          <div class="varc-name">Conversión desde IA</div>
+          <div class="varc-desc">Tráfico y leads que llegan desde interfaces generativas. KPI: sesiones con fuente "AI referral". Frecuencia: semanal.</div>
+          <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
+          <input type="text" id="varc-c" placeholder="Ej: GA4 + UTMs etiquetados por canal IA" oninput="updateProgress()">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">URL donde se publicará este contenido</div>
+        <input type="text" id="varc-url" placeholder="https://tudominio.com/pagina-del-contenido" oninput="updateProgress()">
+        <div class="field-hint">Los LLMs necesitan indexar una URL pública. No guardes este trabajo en un PDF interno.</div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Fecha de publicación prevista</div>
+        <input type="text" id="varc-fecha" placeholder="Ej: 25 junio 2026" oninput="updateProgress()">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Notas de seguimiento</div>
+        <textarea id="varc-notas" placeholder="Próximos pasos, responsable, fecha de revisión VARC..." oninput="updateProgress()"></textarea>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(7)">← Anterior</button>
+        <button class="btn btn-primary" onclick="goToStep(9)">Ver resumen completo →</button>
+      </div>
     </div>
 
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(7)">← Anterior</button>
-      <button class="btn btn-primary" onclick="goToStep(9)">Ver resumen completo →</button>
+    <!-- PAGE 9 — SUMMARY -->
+    <div class="page" id="step-9">
+      <div class="page-header">
+        <div class="page-eyebrow">Resumen</div>
+        <h1 class="page-title">Tu contenido GEO-optimizado</h1>
+        <p class="page-desc">Aquí tienes el resumen de todo lo que has completado. Puedes usarlo como brief final para redactar el contenido publicable.</p>
+      </div>
+
+      <div class="banner">
+        <div class="banner-title">✦ Listo para compartir o publicar</div>
+        <div class="banner-body">Exporta este resumen por correo a tu cliente o equipo, o imprímelo como PDF para tus archivos. No publiques este trabajo en un PDF interno: la meta final es una URL pública.</div>
+      </div>
+
+      <div id="summary-output"></div>
+
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="generateSummary()">↺ Actualizar resumen</button>
+        <button class="btn btn-secondary" onclick="printSummary()">🖨 Imprimir / Exportar PDF</button>
+        <button class="btn btn-secondary" onclick="sendByEmail()">✉ Enviar por correo</button>
+      </div>
+
+      <div class="field-group" style="margin-top:20px;max-width:360px">
+        <div class="field-label">Email destinatario (opcional)</div>
+        <input type="text" id="email-to" placeholder="fernando@ladx.net" oninput="localStorage.setItem('geo-arc-email-to', this.value)">
+      </div>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goToStep(8)">← Volver al paso 8</button>
+      </div>
     </div>
-  </div>
 
-  <!-- STEP 9 — SUMMARY -->
-  <div class="step-panel" id="step-9">
-    <div class="step-eyebrow">Resumen</div>
-    <h1 class="step-title">Tu contenido GEO-optimizado</h1>
-    <p class="step-desc">Aquí tienes el resumen de todo lo que has completado. Puedes usarlo como brief final para redactar el contenido publicable.</p>
+  </main>
+</div>
 
-    <div id="summary-output"></div>
-
-    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="generateSummary()">↺ Actualizar resumen</button>
-      <button class="btn btn-secondary" onclick="printSummary()">Imprimir / Exportar PDF</button>
-      <button class="btn btn-secondary" onclick="sendByEmail()">✉ Enviar por correo</button>
-    </div>
-
-    <div class="field-group" style="margin-top:20px;max-width:360px">
-      <div class="field-label">Email destinatario (opcional)</div>
-      <input type="text" id="email-to" placeholder="fernando@ladx.net" oninput="localStorage.setItem('geo-arc-email-to', this.value)">
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-ghost" onclick="goToStep(8)">← Volver al paso 8</button>
-    </div>
-  </div>
-
-</main>
-
+<div class="toast" id="toast"></div>
 <script>
   let currentStep = 1;
   const totalSteps = 8;
 
-  // FAQ data
   const faqTypes = [
     { tipo: 'Definición', q: '¿Qué es [entidad]?' },
     { tipo: 'Comparación', q: '¿En qué se diferencia [entidad] de [alternativa principal]?' },
@@ -1026,7 +1308,6 @@
     { tipo: 'Diferencial', q: '¿Por qué elegir [entidad] frente a otras opciones?' }
   ];
 
-  // Checklist data
   const checklistItems = [
     { title: 'Entidad definida', desc: 'La entidad principal está clara y las 3-5 entidades adyacentes aparecen de forma natural en el texto.' },
     { title: 'Information Gain visible', desc: 'Hay al menos un dato, métrica o insight propio que no existe en otras fuentes.' },
@@ -1042,13 +1323,11 @@
   const STORAGE_KEY = 'geo-arc-template-data-v1';
 
   function init() {
-    // Build FAQ section
     const faqContainer = document.getElementById('faq-container');
     faqTypes.forEach((f, i) => {
       faqContainer.appendChild(createFaqItem(f.tipo, f.q, i));
     });
 
-    // Build checklist
     const cl = document.getElementById('checklist-container');
     checklistItems.forEach((item, i) => {
       const el = document.createElement('div');
@@ -1059,7 +1338,6 @@
       cl.appendChild(el);
     });
 
-    // Radio labels
     document.querySelectorAll('.radio-opt').forEach(opt => {
       const input = opt.querySelector('input');
       if (input) {
@@ -1073,13 +1351,10 @@
     });
 
     loadData();
-
-    // Attach autosave to every input/textarea that exists at load time
     attachAutosave();
     updateCheckScore();
     updateProgress();
 
-    // Restore email field
     const savedEmail = localStorage.getItem('geo-arc-email-to');
     if (savedEmail) document.getElementById('email-to').value = savedEmail;
   }
@@ -1095,50 +1370,63 @@
   let saveTimeout = null;
   function debounceSave() {
     clearTimeout(saveTimeout);
-    document.getElementById('save-indicator').textContent = 'Guardando…';
-    document.getElementById('save-indicator').style.color = 'var(--text-muted)';
+    setSaveStatus('saving');
     saveTimeout = setTimeout(saveData, 500);
+  }
+
+  function setSaveStatus(state) {
+    const indicator = document.getElementById('save-indicator');
+    const dot = document.getElementById('save-dot');
+    if (state === 'saving') {
+      indicator.textContent = 'Guardando…';
+      dot.style.background = 'var(--lilac-400)';
+    } else if (state === 'saved') {
+      indicator.textContent = '✓ Guardado';
+      dot.style.background = 'var(--green)';
+    } else if (state === 'loaded') {
+      indicator.textContent = 'Sesión recuperada';
+      dot.style.background = 'var(--lilac-400)';
+    } else if (state === 'error') {
+      indicator.textContent = 'Error al guardar';
+      dot.style.background = 'var(--red)';
+    } else {
+      indicator.textContent = 'Guardado localmente';
+      dot.style.background = 'var(--lilac-400)';
+    }
   }
 
   function serializeForm() {
     const data = { fields: {}, causalRows: [], datosRows: [], eeatRows: [], faqs: [], checked: [], radios: {} };
 
-    // Simple ID-based fields (everything with an id, excluding dynamic table rows handled separately)
     document.querySelectorAll('[id]').forEach(el => {
       if (el.tagName === 'INPUT' && el.type === 'text') data.fields[el.id] = el.value;
       if (el.tagName === 'TEXTAREA') data.fields[el.id] = el.value;
     });
 
-    // Radios
     document.querySelectorAll('input[type="radio"]:checked').forEach(r => {
       data.radios[r.name] = r.value;
     });
 
-    // Causal table (skip example row)
     document.querySelectorAll('#causal-table tbody tr:not(.example-row)').forEach(tr => {
       const cells = tr.querySelectorAll('input, textarea');
       data.causalRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '']);
     });
 
-    // Datos table
     document.querySelectorAll('#datos-table tbody tr:not(.example-row)').forEach(tr => {
       const cells = tr.querySelectorAll('input, textarea');
       data.datosRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '']);
     });
 
-    // EEAT table
     document.querySelectorAll('#eeat-table tbody tr:not(.example-row)').forEach(tr => {
       const cells = tr.querySelectorAll('input, textarea');
       data.eeatRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '', cells[3]?.value || '']);
     });
 
-    // FAQs
     const qEls = document.querySelectorAll('.faq-q');
     const aEls = document.querySelectorAll('.faq-a');
     qEls.forEach((q, i) => data.faqs.push([q.value, aEls[i]?.value || '']));
 
-    // Checklist
-    document.querySelectorAll('.checklist-item').forEach((item, i) => {
+    document.querySelectorAll('.checklist-item').forEach((item) => {
       data.checked.push(item.classList.contains('checked'));
     });
 
@@ -1149,19 +1437,14 @@
     const data = serializeForm();
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      const indicator = document.getElementById('save-indicator');
-      indicator.textContent = '✓ Guardado';
-      indicator.style.color = 'var(--green)';
+      setSaveStatus('saved');
       setTimeout(() => {
-        if (indicator.textContent === '✓ Guardado') {
-          indicator.textContent = 'Guardado localmente';
-          indicator.style.color = 'var(--text-dim)';
+        if (document.getElementById('save-indicator').textContent === '✓ Guardado') {
+          setSaveStatus('default');
         }
       }, 1500);
     } catch (e) {
-      const indicator = document.getElementById('save-indicator');
-      indicator.textContent = 'Error al guardar';
-      indicator.style.color = 'var(--red)';
+      setSaveStatus('error');
     }
   }
 
@@ -1171,13 +1454,11 @@
     let data;
     try { data = JSON.parse(raw); } catch (e) { return; }
 
-    // Restore simple fields
     Object.entries(data.fields || {}).forEach(([id, val]) => {
       const el = document.getElementById(id);
       if (el) el.value = val;
     });
 
-    // Restore radios
     Object.entries(data.radios || {}).forEach(([name, val]) => {
       const input = document.querySelector(`input[name="${name}"][value="${val}"]`);
       if (input) {
@@ -1186,10 +1467,8 @@
       }
     });
 
-    // Restore causal rows
     if (data.causalRows && data.causalRows.length) {
       const tbody = document.querySelector('#causal-table tbody');
-      // remove existing non-example rows
       tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
       data.causalRows.forEach(row => {
         const tr = document.createElement('tr');
@@ -1201,7 +1480,6 @@
       });
     }
 
-    // Restore datos rows
     if (data.datosRows && data.datosRows.length) {
       const tbody = document.querySelector('#datos-table tbody');
       tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
@@ -1215,7 +1493,6 @@
       });
     }
 
-    // Restore EEAT rows
     if (data.eeatRows && data.eeatRows.length) {
       const tbody = document.querySelector('#eeat-table tbody');
       tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
@@ -1230,7 +1507,6 @@
       });
     }
 
-    // Restore FAQs
     if (data.faqs && data.faqs.length) {
       const container = document.getElementById('faq-container');
       container.innerHTML = '';
@@ -1243,7 +1519,6 @@
       });
     }
 
-    // Restore checklist
     if (data.checked && data.checked.length) {
       data.checked.forEach((isChecked, i) => {
         if (isChecked) {
@@ -1257,12 +1532,9 @@
       });
     }
 
-    // Recount word fields
     countWords(document.getElementById('s2-resumen'), 'wc-resumen', 50);
-
     attachAutosave();
-    document.getElementById('save-indicator').textContent = 'Cargado de sesión anterior';
-    document.getElementById('save-indicator').style.color = 'var(--accent2)';
+    setSaveStatus('loaded');
   }
 
   function escapeHtml(str) {
@@ -1279,11 +1551,9 @@
 
   function createFaqItem(tipo, pregunta, idx) {
     const div = document.createElement('div');
-    div.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px';
+    div.className = 'faq-item';
     div.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);padding:3px 8px;border-radius:20px">${tipo}</span>
-      </div>
+      <span class="faq-tag">${tipo}</span>
       <div class="field-label" style="margin-bottom:6px">Pregunta</div>
       <input type="text" value="${pregunta}" style="margin-bottom:10px" class="faq-q" oninput="updateProgress()">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
@@ -1319,8 +1589,8 @@
     document.getElementById('check-score').textContent = `${checked} / ${total}`;
     const statusEl = document.getElementById('check-status');
     if (checked === total) { statusEl.textContent = '✓ Listo para publicar'; statusEl.style.color = 'var(--green)'; }
-    else if (checked >= 6) { statusEl.textContent = 'Casi listo'; statusEl.style.color = '#f39c12'; }
-    else { statusEl.textContent = 'Completa los criterios'; statusEl.style.color = 'var(--text-muted)'; }
+    else if (checked >= 6) { statusEl.textContent = 'Casi listo'; statusEl.style.color = '#c4861f'; }
+    else { statusEl.textContent = 'Completa los criterios'; statusEl.style.color = 'var(--text-soft)'; }
   }
 
   function addCausalRow() {
@@ -1358,6 +1628,7 @@
   }
 
   function countWords(el, counterId, max) {
+    if (!el) return;
     const words = el.value.trim().split(/\s+/).filter(w => w.length > 0).length;
     const counter = document.getElementById(counterId);
     if (!counter) return;
@@ -1369,20 +1640,19 @@
 
   function goToStep(n) {
     saveData();
-    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
 
     document.getElementById('step-' + n).classList.add('active');
-    document.querySelectorAll('.nav-item')[n - 1].classList.add('active');
+    document.getElementById('nav-' + n).classList.add('active');
 
     currentStep = n;
     if (n === 9) generateSummary();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
     updateProgress();
   }
 
   function updateProgress() {
-    // Simple heuristic: check filled fields
     let filled = 0;
     const checks = [
       document.getElementById('s1-entidad')?.value,
@@ -1398,6 +1668,24 @@
     const pct = Math.round((filled / checks.length) * 100);
     document.getElementById('progress-fill').style.width = pct + '%';
     document.getElementById('progress-pct').textContent = pct + '%';
+
+    // Mark nav items as "done" lightly based on filled key field per step
+    const doneMap = {
+      1: document.getElementById('s1-entidad')?.value,
+      2: document.getElementById('s2-h1')?.value,
+      3: document.querySelector('#causal-table tbody tr:nth-child(2) input')?.value,
+      4: document.querySelector('#datos-table tbody tr:nth-child(2) input')?.value,
+      5: document.querySelector('#eeat-table tbody tr:nth-child(2) textarea')?.value,
+      6: document.querySelector('.faq-a')?.value,
+      7: document.querySelectorAll('.checklist-item.checked').length === 9,
+      8: document.getElementById('varc-url')?.value,
+    };
+    Object.entries(doneMap).forEach(([step, val]) => {
+      const navEl = document.getElementById('nav-' + step);
+      if (navEl) {
+        if (val) navEl.classList.add('done'); else navEl.classList.remove('done');
+      }
+    });
   }
 
   function generateSummary() {
@@ -1408,20 +1696,17 @@
     const s2res = document.getElementById('s2-resumen')?.value || '—';
     const checked = document.querySelectorAll('.checklist-item.checked').length;
 
-    // Causal rows
     let causalRows = '';
-    const causalTrs = document.querySelectorAll('#causal-table tbody tr:not(.example-row)');
-    causalTrs.forEach(tr => {
+    document.querySelectorAll('#causal-table tbody tr:not(.example-row)').forEach(tr => {
       const inputs = tr.querySelectorAll('input, textarea');
       const c = inputs[0]?.value; const m = inputs[1]?.value; const r = inputs[2]?.value;
-      if (c || m || r) causalRows += `<tr><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${c||'—'}</td><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${m||'—'}</td><td style="padding:8px 10px;border:1px solid var(--border);font-size:12px;vertical-align:top">${r||'—'}</td></tr>`;
+      if (c || m || r) causalRows += `<tr><td style="padding:10px;border-top:1px solid var(--border);font-size:12.5px;vertical-align:top">${c||'—'}</td><td style="padding:10px;border-top:1px solid var(--border);font-size:12.5px;vertical-align:top">${m||'—'}</td><td style="padding:10px;border-top:1px solid var(--border);font-size:12.5px;vertical-align:top">${r||'—'}</td></tr>`;
     });
 
-    // FAQs
     let faqHtml = '';
     document.querySelectorAll('.faq-q').forEach((q, i) => {
       const a = document.querySelectorAll('.faq-a')[i]?.value;
-      if (q.value || a) faqHtml += `<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${q.value||'—'}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.6">${a||'—'}</div></div>`;
+      if (q.value || a) faqHtml += `<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${q.value||'—'}</div><div style="font-size:12.5px;color:var(--text-soft);line-height:1.6;font-weight:300">${a||'—'}</div></div>`;
     });
 
     document.getElementById('summary-output').innerHTML = `
@@ -1433,14 +1718,14 @@
       </div>
       <div class="summary-panel">
         <div class="summary-step-title">Paso 2 — Zona Cero</div>
-        <div class="summary-field"><div class="summary-field-label">H1</div><div class="summary-field-val" style="font-size:15px;font-weight:600">${s2h1}</div></div>
+        <div class="summary-field"><div class="summary-field-label">H1</div><div class="summary-field-val" style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700">${s2h1}</div></div>
         <div class="summary-field"><div class="summary-field-label">Resumen atómico</div><div class="summary-field-val">${s2res}</div></div>
       </div>
-      ${causalRows ? `<div class="summary-panel"><div class="summary-step-title">Paso 3 — Cuerpo causal</div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Característica</th><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Mecanismo</th><th style="padding:8px 10px;border:1px solid var(--border);font-size:11px;background:var(--border);text-align:left">Resultado</th></tr></thead><tbody>${causalRows}</tbody></table></div>` : ''}
+      ${causalRows ? `<div class="summary-panel"><div class="summary-step-title">Paso 3 — Cuerpo causal</div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:10.5px;text-align:left;color:var(--text-soft);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:0.06em">Característica</th><th style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:10.5px;text-align:left;color:var(--text-soft);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:0.06em">Mecanismo</th><th style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:10.5px;text-align:left;color:var(--text-soft);font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:0.06em">Resultado</th></tr></thead><tbody>${causalRows}</tbody></table></div>` : ''}
       ${faqHtml ? `<div class="summary-panel"><div class="summary-step-title">Paso 6 — FAQs</div>${faqHtml}</div>` : ''}
       <div class="summary-panel">
         <div class="summary-step-title">Paso 7 — Checklist</div>
-        <div style="font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:${checked===9?'var(--green)':checked>=6?'#f39c12':'var(--accent)'}">${checked}/9 criterios cumplidos</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:${checked===9?'var(--green)':checked>=6?'#c4861f':'var(--purple-500)'}">${checked}/9 criterios cumplidos</div>
       </div>
     `;
   }
@@ -1521,12 +1806,18 @@
     const encodedBody = encodeURIComponent(body);
     const mailtoLink = `mailto:${to}?subject=${subject}&body=${encodedBody}`;
 
-    // mailto has a practical length limit (~2000 chars in some clients) — warn if too long
     if (mailtoLink.length > 1800) {
-      alert('El contenido es extenso y algunos clientes de correo pueden truncarlo. Se abrirá tu correo igualmente — si el cuerpo aparece incompleto, usa "Imprimir / Exportar PDF" y adjúntalo manualmente.');
+      showToast('Contenido extenso: si el correo se trunca, usa "Exportar PDF" como respaldo.');
     }
 
     window.location.href = mailtoLink;
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3200);
   }
 
   init();
