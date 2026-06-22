@@ -566,12 +566,17 @@
 
   <div class="sidebar-footer">
     <div class="progress-label">
+      <span id="save-indicator" style="color:var(--text-dim)">Sin guardar</span>
+      <span></span>
+    </div>
+    <div class="progress-label">
       <span>Progreso</span>
       <span id="progress-pct">0%</span>
     </div>
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
+    <button class="btn btn-ghost" style="font-size:11px;padding:6px 10px;justify-content:flex-start" onclick="clearAllData()">🗑 Borrar todos los datos</button>
   </div>
 </aside>
 
@@ -747,9 +752,9 @@
     <div class="field-group">
       <div class="field-label">Cabeceras de columna</div>
       <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1">
-        <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1">
-        <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1">
+        <input type="text" id="col1" placeholder="Columna 1 — Ej: Criterio" style="flex:1" oninput="localStorage.setItem('geo-arc-col1',this.value)">
+        <input type="text" id="col2" placeholder="Columna 2 — Ej: Sin [entidad]" style="flex:1" oninput="localStorage.setItem('geo-arc-col2',this.value)">
+        <input type="text" id="col3" placeholder="Columna 3 — Ej: Con [entidad]" style="flex:1" oninput="localStorage.setItem('geo-arc-col3',this.value)">
       </div>
     </div>
 
@@ -932,45 +937,45 @@
         <div class="varc-name">Visibilidad Generativa</div>
         <div class="varc-desc">Cuántas veces aparece tu marca en respuestas de los LLMs monitorizados. KPI: AI Visibility Score (0-100). Frecuencia: semanal.</div>
         <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" placeholder="Ej: Semrush AIO / revisión manual semanal" oninput="updateProgress()">
+        <input type="text" id="varc-v" placeholder="Ej: Semrush AIO / revisión manual semanal" oninput="updateProgress()">
       </div>
       <div class="varc-card">
         <div class="varc-letter" style="color:var(--accent2)">A</div>
         <div class="varc-name">Autoridad de Fuente</div>
         <div class="varc-desc">Con qué frecuencia te citan vs. competidores directos. KPI: Share of Voice generativo (%). Frecuencia: mensual.</div>
         <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" placeholder="Ej: Prompts manuales en ChatGPT, Gemini, Perplexity">
+        <input type="text" id="varc-a" placeholder="Ej: Prompts manuales en ChatGPT, Gemini, Perplexity" oninput="updateProgress()">
       </div>
       <div class="varc-card">
         <div class="varc-letter" style="color:var(--green)">R</div>
         <div class="varc-name">Reputación en IA</div>
         <div class="varc-desc">Precisión y tono de las menciones. ¿Qué dice la IA sobre tu marca y es correcto? KPI: % menciones sin errores. Mensual.</div>
         <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" placeholder="Ej: Auditoría manual mensual de menciones">
+        <input type="text" id="varc-r" placeholder="Ej: Auditoría manual mensual de menciones" oninput="updateProgress()">
       </div>
       <div class="varc-card">
         <div class="varc-letter" style="color:#e67e22">C</div>
         <div class="varc-name">Conversión desde IA</div>
         <div class="varc-desc">Tráfico y leads que llegan desde interfaces generativas. KPI: sesiones con fuente "AI referral". Frecuencia: semanal.</div>
         <div class="field-label" style="margin-bottom:6px;margin-top:0">Tu KPI / herramienta</div>
-        <input type="text" placeholder="Ej: GA4 + UTMs etiquetados por canal IA">
+        <input type="text" id="varc-c" placeholder="Ej: GA4 + UTMs etiquetados por canal IA" oninput="updateProgress()">
       </div>
     </div>
 
     <div class="field-group">
       <div class="field-label">URL donde se publicará este contenido</div>
-      <input type="text" placeholder="https://tudominio.com/pagina-del-contenido" oninput="updateProgress()">
+      <input type="text" id="varc-url" placeholder="https://tudominio.com/pagina-del-contenido" oninput="updateProgress()">
       <div class="field-hint">Los LLMs necesitan indexar una URL pública. No guardes este trabajo en un PDF interno.</div>
     </div>
 
     <div class="field-group">
       <div class="field-label">Fecha de publicación prevista</div>
-      <input type="text" placeholder="Ej: 25 junio 2026">
+      <input type="text" id="varc-fecha" placeholder="Ej: 25 junio 2026" oninput="updateProgress()">
     </div>
 
     <div class="field-group">
       <div class="field-label">Notas de seguimiento</div>
-      <textarea placeholder="Próximos pasos, responsable, fecha de revisión VARC..."></textarea>
+      <textarea id="varc-notas" placeholder="Próximos pasos, responsable, fecha de revisión VARC..." oninput="updateProgress()"></textarea>
     </div>
 
     <div class="step-nav">
@@ -987,9 +992,15 @@
 
     <div id="summary-output"></div>
 
-    <div style="margin-top:24px;display:flex;gap:12px">
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="generateSummary()">↺ Actualizar resumen</button>
       <button class="btn btn-secondary" onclick="printSummary()">Imprimir / Exportar PDF</button>
+      <button class="btn btn-secondary" onclick="sendByEmail()">✉ Enviar por correo</button>
+    </div>
+
+    <div class="field-group" style="margin-top:20px;max-width:360px">
+      <div class="field-label">Email destinatario (opcional)</div>
+      <input type="text" id="email-to" placeholder="fernando@ladx.net" oninput="localStorage.setItem('geo-arc-email-to', this.value)">
     </div>
 
     <div class="step-nav">
@@ -1028,6 +1039,8 @@
     { title: 'Sin adjetivos genéricos', desc: 'Ninguna afirmación usa «innovador», «líder», «único», «mejor» sin dato que lo respalde.' }
   ];
 
+  const STORAGE_KEY = 'geo-arc-template-data-v1';
+
   function init() {
     // Build FAQ section
     const faqContainer = document.getElementById('faq-container');
@@ -1054,9 +1067,214 @@
           opt.closest('.radio-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
           opt.classList.add('selected');
           updateProgress();
+          saveData();
         });
       }
     });
+
+    loadData();
+
+    // Attach autosave to every input/textarea that exists at load time
+    attachAutosave();
+    updateCheckScore();
+    updateProgress();
+
+    // Restore email field
+    const savedEmail = localStorage.getItem('geo-arc-email-to');
+    if (savedEmail) document.getElementById('email-to').value = savedEmail;
+  }
+
+  function attachAutosave() {
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+      if (el.dataset.autosaveBound) return;
+      el.dataset.autosaveBound = '1';
+      el.addEventListener('input', debounceSave);
+    });
+  }
+
+  let saveTimeout = null;
+  function debounceSave() {
+    clearTimeout(saveTimeout);
+    document.getElementById('save-indicator').textContent = 'Guardando…';
+    document.getElementById('save-indicator').style.color = 'var(--text-muted)';
+    saveTimeout = setTimeout(saveData, 500);
+  }
+
+  function serializeForm() {
+    const data = { fields: {}, causalRows: [], datosRows: [], eeatRows: [], faqs: [], checked: [], radios: {} };
+
+    // Simple ID-based fields (everything with an id, excluding dynamic table rows handled separately)
+    document.querySelectorAll('[id]').forEach(el => {
+      if (el.tagName === 'INPUT' && el.type === 'text') data.fields[el.id] = el.value;
+      if (el.tagName === 'TEXTAREA') data.fields[el.id] = el.value;
+    });
+
+    // Radios
+    document.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+      data.radios[r.name] = r.value;
+    });
+
+    // Causal table (skip example row)
+    document.querySelectorAll('#causal-table tbody tr:not(.example-row)').forEach(tr => {
+      const cells = tr.querySelectorAll('input, textarea');
+      data.causalRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '']);
+    });
+
+    // Datos table
+    document.querySelectorAll('#datos-table tbody tr:not(.example-row)').forEach(tr => {
+      const cells = tr.querySelectorAll('input, textarea');
+      data.datosRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '']);
+    });
+
+    // EEAT table
+    document.querySelectorAll('#eeat-table tbody tr:not(.example-row)').forEach(tr => {
+      const cells = tr.querySelectorAll('input, textarea');
+      data.eeatRows.push([cells[0]?.value || '', cells[1]?.value || '', cells[2]?.value || '', cells[3]?.value || '']);
+    });
+
+    // FAQs
+    const qEls = document.querySelectorAll('.faq-q');
+    const aEls = document.querySelectorAll('.faq-a');
+    qEls.forEach((q, i) => data.faqs.push([q.value, aEls[i]?.value || '']));
+
+    // Checklist
+    document.querySelectorAll('.checklist-item').forEach((item, i) => {
+      data.checked.push(item.classList.contains('checked'));
+    });
+
+    return data;
+  }
+
+  function saveData() {
+    const data = serializeForm();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      const indicator = document.getElementById('save-indicator');
+      indicator.textContent = '✓ Guardado';
+      indicator.style.color = 'var(--green)';
+      setTimeout(() => {
+        if (indicator.textContent === '✓ Guardado') {
+          indicator.textContent = 'Guardado localmente';
+          indicator.style.color = 'var(--text-dim)';
+        }
+      }, 1500);
+    } catch (e) {
+      const indicator = document.getElementById('save-indicator');
+      indicator.textContent = 'Error al guardar';
+      indicator.style.color = 'var(--red)';
+    }
+  }
+
+  function loadData() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    let data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+
+    // Restore simple fields
+    Object.entries(data.fields || {}).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+
+    // Restore radios
+    Object.entries(data.radios || {}).forEach(([name, val]) => {
+      const input = document.querySelector(`input[name="${name}"][value="${val}"]`);
+      if (input) {
+        input.checked = true;
+        input.closest('.radio-opt')?.classList.add('selected');
+      }
+    });
+
+    // Restore causal rows
+    if (data.causalRows && data.causalRows.length) {
+      const tbody = document.querySelector('#causal-table tbody');
+      // remove existing non-example rows
+      tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
+      data.causalRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" value="${escapeHtml(row[0])}" placeholder="Característica"></td>
+          <td><textarea placeholder="Mecanismo...">${escapeHtml(row[1])}</textarea></td>
+          <td><input type="text" value="${escapeHtml(row[2])}" placeholder="Resultado medible"></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Restore datos rows
+    if (data.datosRows && data.datosRows.length) {
+      const tbody = document.querySelector('#datos-table tbody');
+      tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
+      data.datosRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" value="${escapeHtml(row[0])}" placeholder="Criterio"></td>
+          <td><input type="text" value="${escapeHtml(row[1])}" placeholder="Valor A"></td>
+          <td><input type="text" value="${escapeHtml(row[2])}" placeholder="Valor B"></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Restore EEAT rows
+    if (data.eeatRows && data.eeatRows.length) {
+      const tbody = document.querySelector('#eeat-table tbody');
+      tbody.querySelectorAll('tr:not(.example-row)').forEach(tr => tr.remove());
+      data.eeatRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><textarea style="min-height:48px" placeholder="Afirmación + dato...">${escapeHtml(row[0])}</textarea></td>
+          <td><input type="text" value="${escapeHtml(row[1])}" placeholder="Fuente"></td>
+          <td><input type="text" value="${escapeHtml(row[2])}" placeholder="Año" style="width:60px"></td>
+          <td><input type="text" value="${escapeHtml(row[3])}" placeholder="URL"></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Restore FAQs
+    if (data.faqs && data.faqs.length) {
+      const container = document.getElementById('faq-container');
+      container.innerHTML = '';
+      data.faqs.forEach((faq, i) => {
+        const tipo = faqTypes[i] ? faqTypes[i].tipo : 'Personalizada';
+        const div = createFaqItem(tipo, faq[0], i);
+        container.appendChild(div);
+        div.querySelector('.faq-a').value = faq[1] || '';
+        countWords(div.querySelector('.faq-a'), 'fwc-' + i, 60);
+      });
+    }
+
+    // Restore checklist
+    if (data.checked && data.checked.length) {
+      data.checked.forEach((isChecked, i) => {
+        if (isChecked) {
+          const item = document.getElementById('cl-' + i);
+          const box = document.getElementById('cb-' + i);
+          if (item && box) {
+            item.classList.add('checked');
+            box.textContent = '✓';
+          }
+        }
+      });
+    }
+
+    // Recount word fields
+    countWords(document.getElementById('s2-resumen'), 'wc-resumen', 50);
+
+    attachAutosave();
+    document.getElementById('save-indicator').textContent = 'Cargado de sesión anterior';
+    document.getElementById('save-indicator').style.color = 'var(--accent2)';
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function clearAllData() {
+    if (!confirm('¿Seguro que quieres borrar todo el contenido escrito? Esta acción no se puede deshacer.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('geo-arc-email-to');
+    location.reload();
   }
 
   function createFaqItem(tipo, pregunta, idx) {
@@ -1082,6 +1300,7 @@
     const idx = container.children.length;
     const div = createFaqItem('Personalizada', '¿...?', 'c' + idx);
     container.appendChild(div);
+    attachAutosave();
   }
 
   function toggleCheck(i) {
@@ -1091,6 +1310,7 @@
     box.textContent = item.classList.contains('checked') ? '✓' : '';
     updateCheckScore();
     updateProgress();
+    saveData();
   }
 
   function updateCheckScore() {
@@ -1111,6 +1331,7 @@
       <td><textarea placeholder="Mecanismo..."></textarea></td>
       <td><input type="text" placeholder="Resultado medible"></td>`;
     tbody.appendChild(tr);
+    attachAutosave();
   }
 
   function addDatosRow() {
@@ -1121,6 +1342,7 @@
       <td><input type="text" placeholder="Valor A"></td>
       <td><input type="text" placeholder="Valor B"></td>`;
     tbody.appendChild(tr);
+    attachAutosave();
   }
 
   function addEeatRow() {
@@ -1132,6 +1354,7 @@
       <td><input type="text" placeholder="Año" style="width:60px"></td>
       <td><input type="text" placeholder="URL"></td>`;
     tbody.appendChild(tr);
+    attachAutosave();
   }
 
   function countWords(el, counterId, max) {
@@ -1145,6 +1368,7 @@
   }
 
   function goToStep(n) {
+    saveData();
     document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
 
@@ -1223,6 +1447,86 @@
 
   function printSummary() {
     window.print();
+  }
+
+  function sendByEmail() {
+    generateSummary();
+    const to = document.getElementById('email-to')?.value || '';
+
+    const s1entidad = document.getElementById('s1-entidad')?.value || '—';
+    const s1gain = document.getElementById('s1-gain')?.value || '—';
+    const s1adj = document.getElementById('s1-adyacentes')?.value || '—';
+    const s2h1 = document.getElementById('s2-h1')?.value || '—';
+    const s2res = document.getElementById('s2-resumen')?.value || '—';
+    const checked = document.querySelectorAll('.checklist-item.checked').length;
+
+    let body = `PLANTILLA GEO/AEO — PROTOCOLO ARC\n`;
+    body += `========================================\n\n`;
+    body += `PASO 1 — ENTIDAD Y DIFERENCIAL\n`;
+    body += `Entidad principal: ${s1entidad}\n`;
+    body += `Entidades adyacentes: ${s1adj}\n`;
+    body += `Information Gain: ${s1gain}\n\n`;
+
+    body += `PASO 2 — ZONA CERO\n`;
+    body += `H1: ${s2h1}\n`;
+    body += `Resumen: ${s2res}\n\n`;
+
+    body += `PASO 3 — CUERPO CAUSAL\n`;
+    document.querySelectorAll('#causal-table tbody tr:not(.example-row)').forEach((tr, i) => {
+      const cells = tr.querySelectorAll('input, textarea');
+      const c = cells[0]?.value, m = cells[1]?.value, r = cells[2]?.value;
+      if (c || m || r) body += `${i+1}. ${c || '—'} → ${m || '—'} → ${r || '—'}\n`;
+    });
+    body += `\n`;
+
+    body += `PASO 4 — TABLA DE DATOS\n`;
+    const col1 = document.getElementById('col1')?.value || 'Criterio';
+    const col2 = document.getElementById('col2')?.value || 'Valor A';
+    const col3 = document.getElementById('col3')?.value || 'Valor B';
+    body += `${col1} | ${col2} | ${col3}\n`;
+    document.querySelectorAll('#datos-table tbody tr:not(.example-row)').forEach(tr => {
+      const cells = tr.querySelectorAll('input');
+      const c = cells[0]?.value, a = cells[1]?.value, b = cells[2]?.value;
+      if (c || a || b) body += `${c||'—'} | ${a||'—'} | ${b||'—'}\n`;
+    });
+    body += `\n`;
+
+    body += `PASO 5 — E-E-A-T / FUENTES\n`;
+    document.querySelectorAll('#eeat-table tbody tr:not(.example-row)').forEach(tr => {
+      const cells = tr.querySelectorAll('input, textarea');
+      const afirm = cells[0]?.value, fuente = cells[1]?.value, anio = cells[2]?.value, url = cells[3]?.value;
+      if (afirm) body += `- ${afirm} (Fuente: ${fuente||'—'}, ${anio||'—'} — ${url||'pendiente'})\n`;
+    });
+    body += `\n`;
+
+    body += `PASO 6 — FAQs\n`;
+    document.querySelectorAll('.faq-q').forEach((q, i) => {
+      const a = document.querySelectorAll('.faq-a')[i]?.value;
+      if (q.value || a) body += `Q: ${q.value}\nA: ${a || '—'}\n\n`;
+    });
+
+    body += `PASO 7 — CHECKLIST\n`;
+    body += `${checked}/9 criterios cumplidos\n\n`;
+
+    body += `PASO 8 — VARC SCORE\n`;
+    body += `V (Visibilidad): ${document.getElementById('varc-v')?.value || '—'}\n`;
+    body += `A (Autoridad): ${document.getElementById('varc-a')?.value || '—'}\n`;
+    body += `R (Reputación): ${document.getElementById('varc-r')?.value || '—'}\n`;
+    body += `C (Conversión): ${document.getElementById('varc-c')?.value || '—'}\n`;
+    body += `URL de publicación: ${document.getElementById('varc-url')?.value || '—'}\n`;
+    body += `Fecha prevista: ${document.getElementById('varc-fecha')?.value || '—'}\n`;
+    body += `Notas: ${document.getElementById('varc-notas')?.value || '—'}\n`;
+
+    const subject = encodeURIComponent(`GEO/AEO — ${s1entidad !== '—' ? s1entidad : 'Plantilla Protocolo ARC'}`);
+    const encodedBody = encodeURIComponent(body);
+    const mailtoLink = `mailto:${to}?subject=${subject}&body=${encodedBody}`;
+
+    // mailto has a practical length limit (~2000 chars in some clients) — warn if too long
+    if (mailtoLink.length > 1800) {
+      alert('El contenido es extenso y algunos clientes de correo pueden truncarlo. Se abrirá tu correo igualmente — si el cuerpo aparece incompleto, usa "Imprimir / Exportar PDF" y adjúntalo manualmente.');
+    }
+
+    window.location.href = mailtoLink;
   }
 
   init();
